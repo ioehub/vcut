@@ -1,0 +1,123 @@
+﻿/* 반응형 타임라인 스타일 */
+.test-timeline {
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: "Nanum Gothic", "Malgun Gothic", sans-serif;
+}
+
+.timeline-container {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-height: 300px;
+  background-color: #f9f9f9;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.controls button {
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.controls button:hover {
+  background-color: #e0e0e0;
+}
+
+.current-state {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.current-state pre {
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 4px;
+  overflow: auto;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 트랙과 클립 관련 스타일 개선 */
+.timeline-track {
+  width: max-content;
+  min-width: 100%;
+  position: relative;
+  border-bottom: 1px solid #eee;
+  padding: 8px 0;
+  background-color: #fff;
+}
+
+.timeline-clip {
+  position: absolute;
+  height: 80%;
+  top: 10%;
+  border-radius: 4px;
+  cursor: move;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 화면 크기별 반응형 스타일 */
+@media (max-width: 768px) {
+  .timeline-container {
+    min-height: 250px;
+  }
+  
+  .test-timeline h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeline-container {
+    min-height: 200px;
+  }
+  
+  .test-timeline h1 {
+    font-size: 1.2rem;
+  }
+  
+  .controls button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+/* 타임라인 헤더 스타일 */
+.timeline-header {
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+  padding: 4px 0;
+  font-weight: bold;
+  display: flex;
+}
+
+.timeline-time-marker {
+  width: 2px;
+  background-color: #ccc;
+  position: absolute;
+  height: 100%;
+}
