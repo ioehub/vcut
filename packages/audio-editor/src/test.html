@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오디오 로더 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 10px 0;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #log {
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+        #audio-controls {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+        }
+        #audio-controls button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>오디오 로더 테스트</h1>
+    
+    <div>
+        <h2>로컬 파일 로드</h2>
+        <input type="file" id="fileInput" accept="audio/*">
+        <button id="loadFileBtn">로컬 파일 로드</button>
+    </div>
+    
+    <div>
+        <h2>URL에서 로드</h2>
+        <input type="text" id="urlInput" placeholder="오디오 파일 URL 입력" style="width: 70%;">
+        <button id="loadUrlBtn">URL에서 로드</button>
+    </div>
+    
+    <div>
+        <h2>경로에서 로드 (테스트용)</h2>
+        <input type="text" id="pathInput" value="C:\Users\a\Downloads\sample-3s.mp3" style="width: 70%;">
+        <button id="loadPathBtn">경로에서 로드</button>
+    </div>
+    
+    <div id="audio-controls" style="display: none;">
+        <button id="playBtn">재생</button>
+        <button id="pauseBtn">일시정지</button>
+        <button id="stopBtn">정지</button>
+        <span id="timeDisplay">0:00 / 0:00</span>
+    </div>
+    
+    <h2>로그</h2>
+    <div id="log"></div>
+    
+    <script>
+        let audioContext;
+        let audioBuffer;
+        let sourceNode;
+        let startTime = 0;
+        let isPaused = false;
+        let pauseTime = 0;
+        
+        // 로그 함수
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            entry.className = type;
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        // 오디오 컨텍스트 초기화
+        function initAudioContext() {
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    log('AudioContext 초기화 성공', 'success');
+                }
+                
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume().then(() => {
+                        log('AudioContext 재개 성공', 'success');
+                    });
+                }
+            } catch (error) {
+                log(`AudioContext 초기화 실패: ${error.message}`, 'error');
+            }
+        }
+        
+        // 로컬 파일 로드
+        async function loadFromFile(file) {
+            try {
+                initAudioContext();
+                
+                log(`파일 로드 시작: ${file.name}, 크기: ${file.size} 바이트`);
+                
+                const arrayBuffer = await file.arrayBuffer();
+                log(`파일 읽기 완료, 크기: ${arrayBuffer.byteLength} 바이트, 디코딩 시작...`);
+                
+                audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                log(`오디오 디코딩 완료 - 길이: ${audioBuffer.duration.toFixed(2)}초, 채널: ${audioBuffer.numberOfChannels}`, 'success');
+                
+                document.getElementById('audio-controls').style.display = 'flex';
+                updateTimeDisplay(0, audioBuffer.duration);
+            } catch (error) {
+                log(`파일 로드 오류: ${error.message}`, 'error');
+            }
+        }
+        
+        // URL에서 로드
+        async function loadFromUrl(url) {
+            try {
+                initAudioContext();
+                
+                log(`URL에서 로드 시작: ${url}`);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`파일 다운로드 실패: ${response.status} ${response.statusText}`);
+                }
+                
+                log('파일 다운로드 완료, ArrayBuffer로 변환...');
+                const arrayBuffer = await response.arrayBuffer();
+                
+                log(`ArrayBuffer 크기: ${arrayBuffer.byteLength} 바이트, 디코딩 시작...`);
+                audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                
+                log(`오디오 디코딩 완료 - 길이: ${audioBuffer.duration.toFixed(2)}초, 채널: ${audioBuffer.numberOfChannels}`, 'success');
+                
+                document.getElementById('audio-controls').style.display = 'flex';
+                updateTimeDisplay(0, audioBuffer.duration);
+            } catch (error) {
+                log(`URL 로드 오류: ${error.message}`, 'error');
+            }
+        }
+        
+        // 경로에서 로드 (테스트용 - 브라우저에서는 보안상 직접 경로 접근이 불가하지만, 로그 확인용)
+        function loadFromPath(path) {
+            try {
+                initAudioContext();
+                
+                log(`로컬 경로에서 로드 시도 (브라우저 제한으로 인해 직접 접근 불가): ${path}`);
+                log('파일 선택 대화상자 열기...');
+                
+                const fileInput = document.getElementById('fileInput');
+                fileInput.click();
+            } catch (error) {
+                log(`경로 로드 오류: ${error.message}`, 'error');
+            }
+        }
+        
+        // 재생 함수
+        function play() {
+            if (!audioBuffer) {
+                log('재생할 오디오가 없습니다', 'error');
+                return;
+            }
+            
+            if (isPaused) {
+                // 일시정지 상태에서 재개
+                const elapsed = pauseTime - startTime;
+                startTime = audioContext.currentTime - elapsed;
+                isPaused = false;
+            } else {
+                // 새로 재생
+                if (sourceNode) {
+                    sourceNode.stop();
+                }
+                
+                sourceNode = audioContext.createBufferSource();
+                sourceNode.buffer = audioBuffer;
+                sourceNode.connect(audioContext.destination);
+                
+                startTime = audioContext.currentTime;
+                sourceNode.start(0);
+            }
+            
+            log('오디오 재생 시작', 'success');
+            
+            // 시간 업데이트 타이머
+            updateTimer();
+        }
+        
+        // 일시정지 함수
+        function pause() {
+            if (!sourceNode || !isPaused) {
+                pauseTime = audioContext.currentTime;
+                if (sourceNode) {
+                    sourceNode.stop();
+                    sourceNode = null;
+                }
+                isPaused = true;
+                log('오디오 일시정지', 'info');
+            }
+        }
+        
+        // 정지 함수
+        function stop() {
+            if (sourceNode) {
+                sourceNode.stop();
+                sourceNode = null;
+            }
+            isPaused = false;
+            startTime = 0;
+            pauseTime = 0;
+            updateTimeDisplay(0, audioBuffer ? audioBuffer.duration : 0);
+            log('오디오 정지', 'info');
+        }
+        
+        // 시간 포맷 함수
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // 시간 표시 업데이트
+        function updateTimeDisplay(current, total) {
+            document.getElementById('timeDisplay').textContent = 
+                `${formatTime(current)} / ${formatTime(total)}`;
+        }
+        
+        // 재생 시간 업데이트 타이머
+        function updateTimer() {
+            if (!audioBuffer || isPaused) return;
+            
+            const currentTime = audioContext.currentTime - startTime;
+            
+            if (currentTime <= audioBuffer.duration) {
+                updateTimeDisplay(currentTime, audioBuffer.duration);
+                requestAnimationFrame(updateTimer);
+            } else {
+                stop();
+            }
+        }
+        
+        // 이벤트 리스너 설정
+        document.addEventListener('DOMContentLoaded', () => {
+            // 로컬 파일 로드 버튼
+            document.getElementById('loadFileBtn').addEventListener('click', () => {
+                document.getElementById('fileInput').click();
+            });
+            
+            // 파일 선택 이벤트
+            document.getElementById('fileInput').addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    loadFromFile(file);
+                }
+            });
+            
+            // URL 로드 버튼
+            document.getElementById('loadUrlBtn').addEventListener('click', () => {
+                const url = document.getElementById('urlInput').value.trim();
+                if (url) {
+                    loadFromUrl(url);
+                } else {
+                    log('URL을 입력해주세요', 'error');
+                }
+            });
+            
+            // 경로 로드 버튼
+            document.getElementById('loadPathBtn').addEventListener('click', () => {
+                const path = document.getElementById('pathInput').value.trim();
+                if (path) {
+                    loadFromPath(path);
+                } else {
+                    log('경로를 입력해주세요', 'error');
+                }
+            });
+            
+            // 재생 버튼
+            document.getElementById('playBtn').addEventListener('click', play);
+            
+            // 일시정지 버튼
+            document.getElementById('pauseBtn').addEventListener('click', pause);
+            
+            // 정지 버튼
+            document.getElementById('stopBtn').addEventListener('click', stop);
+            
+            // 초기 설정
+            initAudioContext();
+        });
+    </script>
+</body>
+</html>

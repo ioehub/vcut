@@ -1,0 +1,257 @@
+/* 테스트 앱 스타일 */
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --background-color: #f5f5f5;
+  --panel-color: #fff;
+  --text-color: #333;
+  --border-color: #ddd;
+  --accent-color: #e74c3c;
+  --hover-color: #2980b9;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+}
+
+.audio-editor-test-app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  color: var(--primary-color);
+  text-align: center;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+h2 {
+  color: var(--secondary-color);
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.section {
+  background-color: var(--panel-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+/* 파일 입력 스타일 */
+.file-input-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.file-input-container input[type="file"] {
+  display: none;
+}
+
+/* 버튼 스타일 */
+.btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn:hover {
+  background-color: var(--hover-color);
+}
+
+.btn:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.btn-small {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.btn-small:hover {
+  filter: brightness(90%);
+}
+
+/* 트랙 목록 스타일 */
+.tracks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.track-item {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  transition: all 0.2s;
+}
+
+.track-item.selected {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.track-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.track-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.track-waveform {
+  margin: 15px 0;
+  background-color: #eee;
+  border-radius: 4px;
+  padding: 10px;
+  height: 60px;
+  overflow: hidden;
+}
+
+.waveform-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 2px;
+}
+
+.waveform-bar {
+  width: 3px;
+  background-color: var(--primary-color);
+  border-radius: 1px;
+}
+
+.track-controls {
+  display: flex;
+  gap: 20px;
+}
+
+/* 컨트롤 그룹 스타일 */
+.control-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-bottom: 15px;
+}
+
+.control-group label {
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #d3d3d3;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+}
+
+/* 재생 컨트롤 스타일 */
+.transport-controls-container {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 6px;
+  background-color: #f0f0f0;
+}
+
+.playback-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* 정보 패널 스타일 */
+.info-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  padding: 15px;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+}
+
+.info-panel div {
+  padding: 10px;
+  background-color: var(--panel-color);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 상태 메시지 스타일 */
+.loading {
+  padding: 10px;
+  background-color: rgba(52, 152, 219, 0.1);
+  color: var(--primary-color);
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.error {
+  padding: 10px;
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--accent-color);
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.no-tracks {
+  text-align: center;
+  padding: 30px;
+  color: #95a5a6;
+  font-style: italic;
+}

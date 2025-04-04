@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 18, 18, 18;
+  --primary-color: #2196f3;
+  --secondary-color: #ff5722;
+  --error-color: #f44336;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  
+  /* 미디어 아이템 색상 */
+  --video-color: #2196f3;
+  --audio-color: #ff9800;
+  --image-color: #4caf50;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+#root {
+  height: 100%;
+}
+
+/* 미디어 아이템 스타일 */
+.media-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.media-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.media-item.selected {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+/* 미디어 타입별 색상 */
+.media-item[data-media-type="video"] .media-type-badge {
+  background-color: rgba(33, 150, 243, 0.8);
+}
+
+.media-item[data-media-type="audio"] .media-type-badge {
+  background-color: rgba(255, 152, 0, 0.8);
+}
+
+.media-item[data-media-type="image"] .media-type-badge {
+  background-color: rgba(76, 175, 80, 0.8);
+}
+
+/* 미디어 그리드 스크롤바 */
+.media-grid::-webkit-scrollbar {
+  width: 10px;
+}
+
+.media-grid::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.media-grid::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 5px;
+}
+
+.media-grid::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+/* 버튼 스타일 */
+button {
+  cursor: pointer;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+button:active:not(:disabled) {
+  opacity: 0.8;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+/* 로딩 스피너 */
+.spinner {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.spinner:after {
+  content: " ";
+  display: block;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  margin: 1px;
+  border: 5px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: spinner 1.2s linear infinite;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

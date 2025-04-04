@@ -1,4 +1,4 @@
-export * from './components/Timeline';
-export * from './components/Track';
-export * from './components/Clip';
+export { Timeline } from './components/Timeline';
+export { Track } from './components/Track';
+export { Clip } from './components/Clip';
 export * from './types';

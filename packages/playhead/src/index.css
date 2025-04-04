@@ -1,0 +1,114 @@
+:root {
+  --primary-color: #2196f3;
+  --secondary-color: #f0f0f0;
+  --text-color: #333;
+  --border-color: #ddd;
+  --playhead-color: #f44336;
+  --inpoint-color: #4caf50;
+  --outpoint-color: #ff9800;
+  --timeline-track-height: 60px;
+  --timeline-ruler-height: 32px;
+  --track-label-width: 80px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Nanum Gothic', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.test-playhead {
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.test-playhead h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+button {
+  padding: 8px 16px;
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #e0e0e0;
+}
+
+.playhead {
+  position: absolute;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.playhead-controls {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background-color: var(--secondary-color);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 8px 0;
+  gap: 8px;
+}
+
+.time-display {
+  font-family: monospace;
+  font-size: 14px;
+  padding: 4px 8px;
+  background-color: #333;
+  color: white;
+  border-radius: 4px;
+  user-select: none;
+}
+
+.time-ruler {
+  position: relative;
+  height: var(--timeline-ruler-height);
+  background-color: #f5f5f5;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .test-playhead h1 {
+    font-size: 20px;
+  }
+  
+  .playhead-controls {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .test-playhead h1 {
+    font-size: 18px;
+  }
+  
+  button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .time-display {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>간단한 오디오 테스트</title>
+    <link rel="icon" href="data:,">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #fileInfo, #log {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        #log {
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .time-display {
+            font-size: 24px;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0%;
+            transition: width 0.1s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>간단한 오디오 테스트</h1>
+        
+        <div>
+            <input type="file" id="audioFile" accept="audio/*">
+            <div id="fileInfo">파일을 선택하세요</div>
+        </div>
+        
+        <div>
+            <button id="playBtn" disabled>재생</button>
+            <button id="pauseBtn" disabled>일시정지</button>
+            <button id="stopBtn" disabled>정지</button>
+        </div>
+        
+        <div class="time-display">
+            <span id="currentTime">00:00:00</span> / <span id="duration">00:00:00</span>
+        </div>
+        
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        
+        <div id="log"></div>
+    </div>
+
+    <script>
+        // DOM 요소
+        const audioFile = document.getElementById('audioFile');
+        const fileInfo = document.getElementById('fileInfo');
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const progressEl = document.getElementById('progress');
+        const logEl = document.getElementById('log');
+        
+        // 오디오 컨텍스트 및 변수
+        let audioContext;
+        let audioBuffer;
+        let sourceNode;
+        let startTime;
+        let pausedAt = 0;
+        let isPlaying = false;
+        let isPaused = false;
+        let updateTimer;
+        
+        // 로깅 함수
+        function log(message, type = 'info') {
+            console.log(message);
+            const item = document.createElement('div');
+            item.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            if (type === 'error') item.style.color = 'red';
+            if (type === 'warning') item.style.color = 'orange';
+            logEl.appendChild(item);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+        
+        // 시간 포맷 함수
+        function formatTime(seconds) {
+            if (!seconds) return '00:00:00';
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+        
+        // 초기화 함수
+        function initAudio() {
+            try {
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AudioContext();
+                log(`오디오 컨텍스트 생성 성공: ${audioContext.state}`);
+                
+                // 자동 재개 설정
+                ['mousedown', 'keydown', 'touchstart'].forEach(event => {
+                    document.addEventListener(event, () => {
+                        if (audioContext && audioContext.state === 'suspended') {
+                            audioContext.resume().then(() => {
+                                log('사용자 상호작용으로 오디오 컨텍스트가 재개됨');
+                            });
+                        }
+                    }, { once: true });
+                });
+                
+                return true;
+            } catch (err) {
+                log(`오디오 컨텍스트 초기화 오류: ${err.message}`, 'error');
+                return false;
+            }
+        }
+        
+        // 파일 로드 함수
+        async function loadAudioFile(file) {
+            try {
+                if (!audioContext && !initAudio()) return;
+                
+                log(`파일 로딩 중: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+                
+                const arrayBuffer = await file.arrayBuffer();
+                const buffer = await audioContext.decodeAudioData(arrayBuffer);
+                
+                audioBuffer = buffer;
+                pausedAt = 0;
+                isPlaying = false;
+                isPaused = false;
+                
+                durationEl.textContent = formatTime(buffer.duration);
+                
+                log(`파일 로드 완료: ${buffer.duration.toFixed(2)}초, ${buffer.numberOfChannels}채널, ${buffer.sampleRate}Hz`);
+                
+                playBtn.disabled = false;
+                pauseBtn.disabled = true;
+                stopBtn.disabled = true;
+                
+                fileInfo.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                
+                return buffer;
+            } catch (err) {
+                log(`파일 로드 오류: ${err.message}`, 'error');
+            }
+        }
+        
+        // 재생 함수
+        function playAudio(offset = 0) {
+            if (!audioBuffer) return;
+            
+            // 이미 재생 중이면 중지
+            if (sourceNode) {
+                sourceNode.stop();
+                sourceNode.disconnect();
+            }
+            
+            // 새 소스 노드 생성
+            sourceNode = audioContext.createBufferSource();
+            sourceNode.buffer = audioBuffer;
+            sourceNode.connect(audioContext.destination);
+            
+            // 재생 시작
+            const duration = audioBuffer.duration - offset;
+            log(`재생 시작: 시작=${offset.toFixed(2)}초, 길이=${duration.toFixed(2)}초`);
+            
+            sourceNode.start(0, offset, duration);
+            
+            // 종료 이벤트
+            sourceNode.onended = () => {
+                if (isPlaying) {
+                    log('재생 완료');
+                    stopAudio();
+                }
+            };
+            
+            // 상태 업데이트
+            startTime = audioContext.currentTime;
+            isPlaying = true;
+            isPaused = false;
+            
+            playBtn.disabled = true;
+            pauseBtn.disabled = false;
+            stopBtn.disabled = false;
+            
+            // 타이머 시작
+            startTimer();
+        }
+        
+        // 일시정지 함수
+        function pauseAudio() {
+            if (!isPlaying) return;
+            
+            // 현재 위치 계산
+            const elapsed = audioContext.currentTime - startTime;
+            pausedAt += elapsed;
+            
+            log(`일시정지: ${pausedAt.toFixed(2)}초`);
+            
+            // 소스 노드 중지
+            sourceNode.stop();
+            sourceNode.disconnect();
+            sourceNode = null;
+            
+            // 상태 업데이트
+            isPlaying = false;
+            isPaused = true;
+            
+            playBtn.disabled = false;
+            pauseBtn.disabled = true;
+            stopBtn.disabled = false;
+            
+            // 타이머 중지
+            clearInterval(updateTimer);
+        }
+        
+        // 정지 함수
+        function stopAudio() {
+            if (!isPlaying && !isPaused) return;
+            
+            if (isPlaying && sourceNode) {
+                sourceNode.stop();
+                sourceNode.disconnect();
+                sourceNode = null;
+            }
+            
+            // 상태 초기화
+            isPlaying = false;
+            isPaused = false;
+            pausedAt = 0;
+            
+            playBtn.disabled = false;
+            pauseBtn.disabled = true;
+            stopBtn.disabled = true;
+            
+            // UI 초기화
+            currentTimeEl.textContent = '00:00:00';
+            progressEl.style.width = '0%';
+            
+            // 타이머 중지
+            clearInterval(updateTimer);
+            
+            log('재생 정지');
+        }
+        
+        // 현재 시간 업데이트 함수
+        function startTimer() {
+            clearInterval(updateTimer);
+            
+            updateTimer = setInterval(() => {
+                if (!isPlaying || !audioBuffer) return;
+                
+                const elapsed = audioContext.currentTime - startTime;
+                const currentTime = pausedAt + elapsed;
+                const duration = audioBuffer.duration;
+                
+                // 진행률 업데이트
+                const progress = (currentTime / duration) * 100;
+                progressEl.style.width = `${Math.min(100, progress)}%`;
+                
+                // 시간 표시 업데이트
+                currentTimeEl.textContent = formatTime(currentTime);
+                
+                // 재생이 끝나면 정지
+                if (currentTime >= duration) {
+                    stopAudio();
+                }
+            }, 100);
+        }
+        
+        // 이벤트 리스너
+        audioFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) loadAudioFile(file);
+        });
+        
+        playBtn.addEventListener('click', () => {
+            if (isPaused) {
+                playAudio(pausedAt);
+            } else {
+                playAudio(0);
+            }
+        });
+        
+        pauseBtn.addEventListener('click', pauseAudio);
+        stopBtn.addEventListener('click', stopAudio);
+        
+        // 초기화
+        log('오디오 테스트 페이지가 로드되었습니다.');
+        initAudio();
+    </script>
+</body>
+</html>
