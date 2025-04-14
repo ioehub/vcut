@@ -1,0 +1,33 @@
+.vcut-toolbar-group {
+  display: flex;
+  flex-direction: column;
+  margin: 0 8px;
+}
+
+.vcut-toolbar.horizontal .vcut-toolbar-group {
+  margin: 0 8px;
+}
+
+.vcut-toolbar.vertical .vcut-toolbar-group {
+  margin: 8px 0;
+}
+
+.vcut-toolbar-group-label {
+  font-size: 0.85em;
+  color: #aaa;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.vcut-toolbar-group-items {
+  display: flex;
+}
+
+.vcut-toolbar.horizontal .vcut-toolbar-group-items {
+  flex-direction: row;
+}
+
+.vcut-toolbar.vertical .vcut-toolbar-group-items {
+  flex-direction: column;
+}

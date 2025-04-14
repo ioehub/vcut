@@ -1,41 +1,41 @@
-import { expect, vi, beforeEach } from 'vitest';
-import '@testing-library/jest-dom/vitest';
+import { beforeEach } from '@jest/globals';
+import '@testing-library/jest-dom';
 
 // Mock browser globals for tests
 globalThis.window = globalThis.window || {} as any;
-globalThis.AudioContext = vi.fn().mockImplementation(() => ({
-  createGain: vi.fn().mockReturnValue({
-    connect: vi.fn(),
+globalThis.AudioContext = jest.fn().mockImplementation(() => ({
+  createGain: jest.fn().mockReturnValue({
+    connect: jest.fn(),
     gain: { value: 1 }
   }),
-  createBufferSource: vi.fn().mockReturnValue({
-    connect: vi.fn(),
-    start: vi.fn(),
-    stop: vi.fn(),
-    disconnect: vi.fn(),
+  createBufferSource: jest.fn().mockReturnValue({
+    connect: jest.fn(),
+    start: jest.fn(),
+    stop: jest.fn(),
+    disconnect: jest.fn(),
     buffer: null
   }),
   currentTime: 0,
   destination: {},
   state: 'running',
-  resume: vi.fn().mockResolvedValue(undefined),
-  suspend: vi.fn().mockResolvedValue(undefined),
-  close: vi.fn().mockResolvedValue(undefined),
-  decodeAudioData: vi.fn().mockImplementation(() => {
+  resume: jest.fn().mockResolvedValue(undefined),
+  suspend: jest.fn().mockResolvedValue(undefined),
+  close: jest.fn().mockResolvedValue(undefined),
+  decodeAudioData: jest.fn().mockImplementation(() => {
     return Promise.resolve({
       duration: 10,
       length: 441000,
       numberOfChannels: 2,
       sampleRate: 44100,
-      getChannelData: vi.fn().mockReturnValue(new Float32Array(1000))
+      getChannelData: jest.fn().mockReturnValue(new Float32Array(1000))
     });
   })
 }));
 
 // Mock fetch API
-globalThis.fetch = vi.fn();
+globalThis.fetch = jest.fn();
 
 // Setup global mocks for tests
 beforeEach(() => {
-  vi.clearAllMocks();
+  jest.clearAllMocks();
 });

@@ -1,0 +1,62 @@
+.preview-player-container {
+  position: relative;
+  background-color: #000;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.preview-player-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.buffering-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 5;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 전체 화면 모드 스타일 */
+.preview-player-container:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+}
+
+.preview-player-container:fullscreen .preview-player-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 모바일 대응 */
+@media (max-width: 600px) {
+  .preview-player-container {
+    max-height: 50vh;
+  }
+}

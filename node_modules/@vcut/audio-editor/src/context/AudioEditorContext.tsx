@@ -940,6 +940,3 @@ export const useAudioEditor = () => {
   }
   return context;
 };
-
-// 기본 내보내기
-export { AudioEditorProvider, useAudioEditor };

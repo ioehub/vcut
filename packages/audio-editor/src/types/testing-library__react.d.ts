@@ -1,4 +1,7 @@
-// Type definitions for @testing-library/react
+/// <reference types="vitest" />
+
+import '@testing-library/react';
+
 declare module '@testing-library/react' {
   import { queries, BoundFunction } from '@testing-library/dom';
   import { ReactElement } from 'react';
@@ -112,3 +115,11 @@ declare module '@testing-library/react' {
 
   export const screen: RenderResult;
 }
+
+declare module '@testing-library/react' {
+  export interface FireEvent {
+    click(element: HTMLElement): boolean;
+  }
+}
+
+export {};

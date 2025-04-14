@@ -1,24 +1,25 @@
 import { render, screen } from '@testing-library/react';
-import { describe, test, expect, beforeEach, vi } from 'vitest';
+import '@testing-library/jest-dom';
 import TransportControls from '../components/TransportControls';
 
+// Import Jest type definitions
+import '../types/jest.d.ts';
+
 // Mock the AudioEditorContext module
-vi.mock('../context/AudioEditorContext', () => {
-  return {
-    useAudioEditor: vi.fn(),
-  };
-});
+jest.mock('../context/AudioEditorContext', () => ({
+  useAudioEditor: jest.fn(),
+}));
 
 // Import the mocked module
 import { useAudioEditor } from '../context/AudioEditorContext';
 
 describe('TransportControls', () => {
   // Set up mock functions for the tests
-  const mockPlay = vi.fn();
-  const mockPause = vi.fn();
-  const mockStop = vi.fn();
-  const mockSetCurrentTime = vi.fn();
-  const mockSetLoop = vi.fn();
+  const mockPlay = jest.fn();
+  const mockPause = jest.fn();
+  const mockStop = jest.fn();
+  const mockSetCurrentTime = jest.fn();
+  const mockSetLoop = jest.fn();
   
   // Default mock state
   const defaultMockState = {
@@ -34,7 +35,7 @@ describe('TransportControls', () => {
   };
   
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     
     // Reset the mock implementation for each test
     (useAudioEditor as any).mockReturnValue({

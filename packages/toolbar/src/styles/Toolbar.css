@@ -1,0 +1,53 @@
+.vcut-toolbar {
+  display: flex;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+/* Orientation styles */
+.vcut-toolbar.horizontal {
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+  padding: 4px;
+}
+
+.vcut-toolbar.vertical {
+  flex-direction: column;
+  height: 100%;
+  width: auto;
+  padding: 4px;
+}
+
+/* Position styles */
+.vcut-toolbar.top {
+  border-bottom: 1px solid #444;
+}
+
+.vcut-toolbar.bottom {
+  border-top: 1px solid #444;
+}
+
+.vcut-toolbar.left {
+  border-right: 1px solid #444;
+}
+
+.vcut-toolbar.right {
+  border-left: 1px solid #444;
+}
+
+/* Size styles */
+.vcut-toolbar.small {
+  font-size: 12px;
+}
+
+.vcut-toolbar.medium {
+  font-size: 14px;
+}
+
+.vcut-toolbar.large {
+  font-size: 16px;
+}

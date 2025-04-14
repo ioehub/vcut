@@ -1,5 +1,5 @@
 // Jest-DOM 추가 matchers
-import '@testing-library/jest-dom';
+require('@testing-library/jest-dom');
 
 // Web Audio API 모킹
 window.AudioContext = jest.fn().mockImplementation(() => ({

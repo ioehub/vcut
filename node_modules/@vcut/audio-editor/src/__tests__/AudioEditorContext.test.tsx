@@ -1,43 +1,51 @@
 // We need React for JSX
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
-import { describe, test, expect, beforeEach, vi } from 'vitest';
+import { render, screen, act } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { AudioEditorProvider, useAudioEditor } from '../context/AudioEditorContext';
 
+// Jest 타입 정의
+declare global {
+  const jest: any;
+  const describe: (name: string, fn: () => void) => void;
+  const beforeEach: (fn: () => void) => void;
+  const test: (name: string, fn: () => void) => void;
+  const expect: any;
+}
+
 // AudioService 모킹
-vi.mock('../services/AudioService', () => {
-  return {
-    default: vi.fn().mockImplementation(() => ({
-      initialize: vi.fn(),
-      loadAudioFile: vi.fn().mockResolvedValue({
-        duration: 10,
-        numberOfChannels: 2,
-        sampleRate: 44100
-      }),
-      decodeAudioData: vi.fn().mockResolvedValue({
-        duration: 10,
-        numberOfChannels: 2,
-        sampleRate: 44100
-      }),
-      generateWaveformData: vi.fn().mockReturnValue([]),
-      playAllTracks: vi.fn(),
-      pausePlayback: vi.fn(),
-      resumePlayback: vi.fn(),
-      stopAllTracks: vi.fn(),
-      getCurrentTime: vi.fn().mockReturnValue(0),
-      getIsPlaying: vi.fn().mockReturnValue(false),
-      setMasterVolume: vi.fn(),
-      setTrackVolume: vi.fn(),
-      setTrackPan: vi.fn(),
-      applyEffect: vi.fn(),
-      audioContext: {
-        state: 'running',
-        resume: vi.fn().mockResolvedValue(undefined),
-        close: vi.fn().mockResolvedValue(undefined)
-      }
-    }))
-  };
-});
+jest.mock('../services/AudioService', () => ({
+  __esModule: true,
+  default: jest.fn().mockImplementation(() => ({
+    initialize: jest.fn(),
+    loadAudioFile: jest.fn().mockResolvedValue({
+      duration: 10,
+      numberOfChannels: 2,
+      sampleRate: 44100
+    }),
+    decodeAudioData: jest.fn().mockResolvedValue({
+      duration: 10,
+      numberOfChannels: 2,
+      sampleRate: 44100
+    }),
+    generateWaveformData: jest.fn().mockReturnValue([]),
+    playAllTracks: jest.fn(),
+    pausePlayback: jest.fn(),
+    resumePlayback: jest.fn(),
+    stopAllTracks: jest.fn(),
+    getCurrentTime: jest.fn().mockReturnValue(0),
+    getIsPlaying: jest.fn().mockReturnValue(false),
+    setMasterVolume: jest.fn(),
+    setTrackVolume: jest.fn(),
+    setTrackPan: jest.fn(),
+    applyEffect: jest.fn(),
+    audioContext: {
+      state: 'running',
+      resume: jest.fn().mockResolvedValue(undefined),
+      close: jest.fn().mockResolvedValue(undefined)
+    }
+  }))
+}));
 
 // Import the mocked AudioService
 import AudioServiceMock from '../services/AudioService';
@@ -168,15 +176,13 @@ const useAudioEditor2 = () => {
 };
 
 // Mock the context module
-vi.mock('../context/AudioEditorContext', () => {
-  return {
-    AudioEditorProvider: ({ children }: { children: React.ReactNode }) => (
-      <AudioEditorProvider2>{children}</AudioEditorProvider2>
-    ),
-    useAudioEditor: () => useAudioEditor2(),
-    __esModule: true
-  };
-});
+jest.mock('../context/AudioEditorContext', () => ({
+  AudioEditorProvider: ({ children }: { children: React.ReactNode }) => (
+    <AudioEditorProvider2>{children}</AudioEditorProvider2>
+  ),
+  useAudioEditor: () => useAudioEditor2(),
+  __esModule: true
+}));
 
 // 테스트 컴포넌트
 const TestComponent = () => {
@@ -253,7 +259,7 @@ const TestComponent = () => {
 
 describe('AudioEditorContext', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   test('컨텍스트가 올바르게 초기화된다', () => {
@@ -279,8 +285,8 @@ describe('AudioEditorContext', () => {
 
     // 트랙 추가
     await act(async () => {
-      const addButton = screen.getByTestId('add-track-btn');
-      fireEvent.click(addButton);
+      const addButton = screen.getByTestId('add-track-btn') as HTMLButtonElement;
+      addButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     
     const trackCount = screen.getByTestId('track-count');
@@ -288,8 +294,8 @@ describe('AudioEditorContext', () => {
 
     // 트랙 제거
     await act(async () => {
-      const removeButton = screen.getByTestId('remove-track-btn');
-      fireEvent.click(removeButton);
+      const removeButton = screen.getByTestId('remove-track-btn') as HTMLButtonElement;
+      removeButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     
     expect(trackCount.textContent).toBe('0');
@@ -304,8 +310,8 @@ describe('AudioEditorContext', () => {
 
     // 재생 시작
     await act(async () => {
-      const playButton = screen.getByTestId('play-btn');
-      fireEvent.click(playButton);
+      const playButton = screen.getByTestId('play-btn') as HTMLButtonElement;
+      playButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     
     const isPlaying = screen.getByTestId('is-playing');
@@ -313,19 +319,19 @@ describe('AudioEditorContext', () => {
 
     // 일시정지
     await act(async () => {
-      const pauseButton = screen.getByTestId('pause-btn');
-      fireEvent.click(pauseButton);
+      const pauseButton = screen.getByTestId('pause-btn') as HTMLButtonElement;
+      pauseButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     
     expect(isPlaying.textContent).toBe('false');
 
     // 정지
     await act(async () => {
-      const playButton = screen.getByTestId('play-btn');
-      fireEvent.click(playButton);
+      const playButton = screen.getByTestId('play-btn') as HTMLButtonElement;
+      playButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       
-      const stopButton = screen.getByTestId('stop-btn');
-      fireEvent.click(stopButton);
+      const stopButton = screen.getByTestId('stop-btn') as HTMLButtonElement;
+      stopButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     
     expect(isPlaying.textContent).toBe('false');
@@ -343,8 +349,8 @@ describe('AudioEditorContext', () => {
 
     // 시간 설정
     await act(async () => {
-      const timeButton = screen.getByTestId('set-time-btn');
-      fireEvent.click(timeButton);
+      const timeButton = screen.getByTestId('set-time-btn') as HTMLButtonElement;
+      timeButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     
     const currentTime = screen.getByTestId('current-time');
@@ -352,8 +358,8 @@ describe('AudioEditorContext', () => {
 
     // 볼륨 설정 - 이 테스트는 내부 상태만 확인하므로 AudioService 호출은 확인하지 않음
     await act(async () => {
-      const volumeButton = screen.getByTestId('set-volume-btn');
-      fireEvent.click(volumeButton);
+      const volumeButton = screen.getByTestId('set-volume-btn') as HTMLButtonElement;
+      volumeButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     
     // AudioService 모킹은 이미 되어 있으므로 호출 여부는 확인하지 않음

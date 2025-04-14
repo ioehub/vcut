@@ -1,46 +1,46 @@
-import { describe, test, expect, beforeEach, vi } from 'vitest';
+import { describe, test, expect, beforeEach } from '@jest/globals';
 import AudioService from '../services/AudioService';
 
 // Mock the window object and AudioContext
 beforeEach(() => {
-  vi.clearAllMocks();
+  jest.clearAllMocks();
   
   // Create a more complete mock of the AudioContext
-  globalThis.AudioContext = vi.fn().mockImplementation(() => ({
-    createGain: vi.fn().mockReturnValue({
-      connect: vi.fn(),
+  globalThis.AudioContext = jest.fn().mockImplementation(() => ({
+    createGain: jest.fn().mockReturnValue({
+      connect: jest.fn(),
       gain: { value: 1 }
     }),
-    createBufferSource: vi.fn().mockReturnValue({
-      connect: vi.fn(),
-      start: vi.fn(),
-      stop: vi.fn(),
-      disconnect: vi.fn(),
+    createBufferSource: jest.fn().mockReturnValue({
+      connect: jest.fn(),
+      start: jest.fn(),
+      stop: jest.fn(),
+      disconnect: jest.fn(),
       buffer: null
     }),
-    createStereoPanner: vi.fn().mockReturnValue({
-      connect: vi.fn(),
+    createStereoPanner: jest.fn().mockReturnValue({
+      connect: jest.fn(),
       pan: { value: 0 }
     }),
-    createAnalyser: vi.fn().mockReturnValue({
-      connect: vi.fn(),
+    createAnalyser: jest.fn().mockReturnValue({
+      connect: jest.fn(),
       fftSize: 2048,
-      getByteFrequencyData: vi.fn(),
-      getByteTimeDomainData: vi.fn()
+      getByteFrequencyData: jest.fn(),
+      getByteTimeDomainData: jest.fn()
     }),
     currentTime: 0,
     destination: {},
     state: 'running',
-    resume: vi.fn().mockResolvedValue(undefined),
-    suspend: vi.fn().mockResolvedValue(undefined),
-    close: vi.fn().mockResolvedValue(undefined),
-    decodeAudioData: vi.fn().mockImplementation(() => {
+    resume: jest.fn().mockResolvedValue(undefined),
+    suspend: jest.fn().mockResolvedValue(undefined),
+    close: jest.fn().mockResolvedValue(undefined),
+    decodeAudioData: jest.fn().mockImplementation(() => {
       return Promise.resolve({
         duration: 10,
         length: 441000,
         numberOfChannels: 2,
         sampleRate: 44100,
-        getChannelData: vi.fn().mockReturnValue(new Float32Array(1000))
+        getChannelData: jest.fn().mockReturnValue(new Float32Array(1000))
       });
     })
   }));
@@ -48,7 +48,7 @@ beforeEach(() => {
   // Mock document event listeners
   globalThis.document = {
     ...globalThis.document,
-    addEventListener: vi.fn()
+    addEventListener: jest.fn()
   };
 });
 
@@ -69,7 +69,7 @@ describe('AudioService', () => {
 
   test('loadAudioFile이 오디오 버퍼를 올바르게 로드한다', async () => {
     // fetch 모킹
-    globalThis.fetch = vi.fn().mockImplementation(() =>
+    globalThis.fetch = jest.fn().mockImplementation(() =>
       Promise.resolve({
         ok: true,
         arrayBuffer: () => Promise.resolve(new ArrayBuffer(1000))
@@ -105,7 +105,7 @@ describe('AudioService', () => {
     
     // Mock the internal playAllTracks method
     const originalPlayAllTracks = audioService.playAllTracks;
-    audioService.playAllTracks = vi.fn().mockImplementation(() => {
+    audioService.playAllTracks = jest.fn().mockImplementation(() => {
       (audioService as any).isPlaying = true;
       // Don't call the original to avoid the error
       // return originalPlayAllTracks.call(audioService);
@@ -113,7 +113,7 @@ describe('AudioService', () => {
     
     // Mock the internal stopAllTracks method
     const originalStopAllTracks = audioService.stopAllTracks;
-    audioService.stopAllTracks = vi.fn().mockImplementation(() => {
+    audioService.stopAllTracks = jest.fn().mockImplementation(() => {
       (audioService as any).isPlaying = false;
       // Don't call the original to avoid potential errors
       // return originalStopAllTracks.call(audioService);
