@@ -1,0 +1,36 @@
+.audio-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 100px;
+}
+
+.play-button {
+  background-color: #27ae60;
+}
+
+.play-button:hover {
+  background-color: #2ecc71;
+}
+
+.pause-button {
+  background-color: #f39c12;
+}
+
+.pause-button:hover {
+  background-color: #f1c40f;
+}
+
+.stop-button {
+  background-color: #e74c3c;
+}
+
+.stop-button:hover {
+  background-color: #c0392b;
+}

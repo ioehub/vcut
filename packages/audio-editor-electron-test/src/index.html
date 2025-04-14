@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vCut 오디오 편집 테스트</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+      
+      .file-input {
+        margin-bottom: 20px;
+      }
+      
+      .waveform {
+        width: 100%;
+        height: 150px;
+        background-color: #ecf0f1;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      
+      .controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      
+      button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      button:hover {
+        background-color: #2980b9;
+      }
+      
+      button:disabled {
+        background-color: #bdc3c7;
+        cursor: not-allowed;
+      }
+      
+      .play-button { background-color: #27ae60; }
+      .play-button:hover { background-color: #2ecc71; }
+      
+      .pause-button { background-color: #f39c12; }
+      .pause-button:hover { background-color: #f1c40f; }
+      
+      .stop-button { background-color: #e74c3c; }
+      .stop-button:hover { background-color: #c0392b; }
+      
+      .time-display {
+        display: flex;
+        justify-content: space-between;
+        font-family: monospace;
+        margin-bottom: 10px;
+      }
+      
+      .progress-bar {
+        height: 10px;
+        background-color: #ecf0f1;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+      
+      .progress {
+        height: 100%;
+        background-color: #3498db;
+        width: 0%;
+        transition: width 0.3s;
+      }
+      
+      .volume-control {
+        margin-bottom: 20px;
+      }
+      
+      .fade-effects {
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      
+      .fade-control {
+        margin-bottom: 10px;
+      }
+      
+      .logs {
+        height: 200px;
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: 'Consolas', monospace;
+        overflow-y: auto;
+        font-size: 12px;
+      }
+      
+      .log-entry {
+        margin-bottom: 3px;
+        border-bottom: 1px solid #34495e;
+        padding-bottom: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>vCut 오디오 편집 테스트</h1>
+      
+      <div class="file-input">
+        <input type="file" id="audioFile" accept="audio/*">
+      </div>
+      
+      <div class="waveform" id="waveform"></div>
+      
+      <div class="time-display">
+        <span id="currentTime">00:00.00</span>
+        <span id="duration">00:00.00</span>
+      </div>
+      
+      <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+      </div>
+      
+      <div class="controls">
+        <button id="playButton" class="play-button" disabled>재생</button>
+        <button id="pauseButton" class="pause-button" disabled>일시정지</button>
+        <button id="stopButton" class="stop-button" disabled>정지</button>
+      </div>
+      
+      <div class="volume-control">
+        <label>볼륨: <span id="volumeValue">100</span>%</label>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="1" disabled>
+      </div>
+      
+      <div class="fade-effects">
+        <h3>페이드 효과</h3>
+        
+        <div class="fade-control">
+          <label>페이드 인: <span id="fadeInValue">0.0</span>초</label>
+          <input type="range" id="fadeIn" min="0" max="5" step="0.1" value="0" disabled>
+        </div>
+        
+        <div class="fade-control">
+          <label>페이드 아웃: <span id="fadeOutValue">0.0</span>초</label>
+          <input type="range" id="fadeOut" min="0" max="5" step="0.1" value="0" disabled>
+        </div>
+        
+        <button id="applyFade" disabled>페이드 적용</button>
+      </div>
+      
+      <h3>로그</h3>
+      <div class="logs" id="logs"></div>
+    </div>
+    
+    <script src="AudioService.js"></script>
+    <script>
+      // 오디오 서비스 인스턴스
+      let audioService;
+      
+      // DOM 요소
+      const fileInput = document.getElementById('audioFile');
+      const waveformContainer = document.getElementById('waveform');
+      const currentTimeDisplay = document.getElementById('currentTime');
+      const durationDisplay = document.getElementById('duration');
+      const progressBar = document.getElementById('progress');
+      const playButton = document.getElementById('playButton');
+      const pauseButton = document.getElementById('pauseButton');
+      const stopButton = document.getElementById('stopButton');
+      const volumeSlider = document.getElementById('volume');
+      const volumeValue = document.getElementById('volumeValue');
+      const fadeInSlider = document.getElementById('fadeIn');
+      const fadeInValue = document.getElementById('fadeInValue');
+      const fadeOutSlider = document.getElementById('fadeOut');
+      const fadeOutValue = document.getElementById('fadeOutValue');
+      const applyFadeButton = document.getElementById('applyFade');
+      const logsContainer = document.getElementById('logs');
+      
+      // 원본 콘솔 메소드 저장
+      const originalLog = console.log;
+      const originalWarn = console.warn;
+      const originalError = console.error;
+      
+      // 로그 함수 오버라이드
+      console.log = function(...args) {
+        originalLog.apply(console, args);
+        addLog('[로그] ' + args.join(' '));
+      };
+      
+      console.warn = function(...args) {
+        originalWarn.apply(console, args);
+        addLog('[경고] ' + args.join(' '));
+      };
+      
+      console.error = function(...args) {
+        originalError.apply(console, args);
+        addLog('[오류] ' + args.join(' '));
+      };
+      
+      // 로그 추가 함수
+      function addLog(message) {
+        const logEntry = document.createElement('div');
+        logEntry.className = 'log-entry';
+        logEntry.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+        logsContainer.appendChild(logEntry);
+        logsContainer.scrollTop = logsContainer.scrollHeight;
+      }
+      
+      // 시간 포맷 함수
+      function formatTime(time) {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+        const milliseconds = Math.floor((time % 1) * 100);
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+      }
+      
+      // 웨이브폼 그리기 함수
+      function drawWaveform(waveformData) {
+        const canvas = document.createElement('canvas');
+        canvas.width = waveformContainer.clientWidth;
+        canvas.height = waveformContainer.clientHeight;
+        waveformContainer.innerHTML = '';
+        waveformContainer.appendChild(canvas);
+        
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        
+        // 배경 지우기
+        ctx.clearRect(0, 0, width, height);
+        
+        if (!waveformData) {
+          return;
+        }
+        
+        // 파형 그리기
+        const barWidth = width / waveformData.length;
+        const centerY = height / 2;
+        
+        ctx.fillStyle = '#3498db';
+        
+        for (let i = 0; i < waveformData.length; i++) {
+          const x = i * barWidth;
+          const amplitude = waveformData[i] * height;
+          
+          ctx.fillRect(
+            x, 
+            centerY - (amplitude / 2), 
+            barWidth * 0.8, 
+            amplitude
+          );
+        }
+      }
+      
+      // 초기화 함수
+      function init() {
+        addLog('오디오 테스트 애플리케이션 초기화 중...');
+        
+        try {
+          // 오디오 서비스 생성
+          audioService = new AudioService();
+          
+          // 타이머 설정
+          let timerId;
+          
+          // 이벤트 핸들러 설정
+          fileInput.addEventListener('change', async (e) => {
+            const files = e.target.files;
+            if (!files || !files.length) return;
+            
+            const file = files[0];
+            addLog(`오디오 파일 선택됨: ${file.name}`);
+            
+            try {
+              const success = await audioService.loadAudioFile(file);
+              
+              if (success) {
+                const duration = audioService.getDuration();
+                durationDisplay.textContent = formatTime(duration);
+                
+                // 컨트롤 활성화
+                playButton.disabled = false;
+                volumeSlider.disabled = false;
+                fadeInSlider.disabled = false;
+                fadeOutSlider.disabled = false;
+                applyFadeButton.disabled = false;
+                
+                // 파형 그리기
+                const waveformData = audioService.generateWaveformData();
+                drawWaveform(waveformData);
+                
+                addLog(`오디오 로드 성공: ${file.name}, 길이: ${duration.toFixed(2)}초`);
+              }
+            } catch (error) {
+              addLog(`오디오 로드 오류: ${error.message}`);
+            }
+          });
+          
+          // 재생 버튼
+          playButton.addEventListener('click', () => {
+            if (!audioService) return;
+            
+            audioService.play();
+            playButton.disabled = true;
+            pauseButton.disabled = false;
+            stopButton.disabled = false;
+            
+            // 타이머 시작
+            clearInterval(timerId);
+            timerId = setInterval(() => {
+              const currentTime = audioService.getCurrentTime();
+              const duration = audioService.getDuration();
+              
+              currentTimeDisplay.textContent = formatTime(currentTime);
+              progressBar.style.width = `${(currentTime / duration) * 100}%`;
+              
+              if (!audioService.getIsPlaying()) {
+                clearInterval(timerId);
+                currentTimeDisplay.textContent = formatTime(0);
+                progressBar.style.width = '0%';
+                
+                playButton.disabled = false;
+                pauseButton.disabled = true;
+                stopButton.disabled = true;
+              }
+            }, 100);
+          });
+          
+          // 일시정지 버튼
+          pauseButton.addEventListener('click', () => {
+            if (!audioService) return;
+            
+            audioService.pause();
+            playButton.disabled = false;
+            pauseButton.disabled = true;
+            
+            clearInterval(timerId);
+          });
+          
+          // 정지 버튼
+          stopButton.addEventListener('click', () => {
+            if (!audioService) return;
+            
+            audioService.stop();
+            playButton.disabled = false;
+            pauseButton.disabled = true;
+            stopButton.disabled = true;
+            
+            clearInterval(timerId);
+            currentTimeDisplay.textContent = formatTime(0);
+            progressBar.style.width = '0%';
+          });
+          
+          // 볼륨 슬라이더
+          volumeSlider.addEventListener('input', () => {
+            if (!audioService) return;
+            
+            const value = parseFloat(volumeSlider.value);
+            audioService.setVolume(value);
+            volumeValue.textContent = Math.round(value * 100);
+          });
+          
+          // 페이드 인 슬라이더
+          fadeInSlider.addEventListener('input', () => {
+            const value = parseFloat(fadeInSlider.value);
+            fadeInValue.textContent = value.toFixed(1);
+          });
+          
+          // 페이드 아웃 슬라이더
+          fadeOutSlider.addEventListener('input', () => {
+            const value = parseFloat(fadeOutSlider.value);
+            fadeOutValue.textContent = value.toFixed(1);
+          });
+          
+          // 페이드 적용 버튼
+          applyFadeButton.addEventListener('click', () => {
+            if (!audioService) return;
+            
+            const fadeInDuration = parseFloat(fadeInSlider.value);
+            const fadeOutDuration = parseFloat(fadeOutSlider.value);
+            
+            const success = audioService.applyFadeEffect(fadeInDuration, fadeOutDuration);
+            
+            if (success) {
+              addLog(`페이드 효과 적용됨: 인=${fadeInDuration}초, 아웃=${fadeOutDuration}초`);
+            }
+          });
+          
+          addLog('오디오 테스트 애플리케이션 초기화 완료');
+        } catch (error) {
+          addLog(`초기화 오류: ${error.message}`);
+        }
+      }
+      
+      // 페이지 로드 시 초기화
+      window.addEventListener('DOMContentLoaded', init);
+    </script>
+  </body>
+</html>

@@ -83,6 +83,54 @@
         .log-warn {
             color: #fd4;
         }
+        .waveform-container {
+            margin: 20px 0;
+            background-color: #222;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #waveformCanvas {
+            width: 100%;
+            height: 150px;
+            background-color: #111;
+            border-radius: 3px;
+        }
+        .volume-control {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        #volumeSlider {
+            width: 300px;
+            margin-right: 10px;
+        }
+        .fade-effects {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .fade-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .fade-controls > div {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .fade-controls label {
+            width: 120px;
+        }
+        .fade-controls input[type="range"] {
+            width: 250px;
+        }
+        #applyFadeBtn {
+            margin-top: 10px;
+            width: 120px;
+        }
     </style>
 </head>
 <body>
@@ -105,6 +153,34 @@
             <button id="pauseBtn">일시정지</button>
             <button id="stopBtn">정지</button>
         </div>
+
+        <div class="volume-control">
+            <h3>볼륨 조절</h3>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+            <span id="volumeValue">100%</span>
+        </div>
+        
+        <div class="fade-effects">
+            <h3>페이드 효과</h3>
+            <div class="fade-controls">
+                <div>
+                    <label for="fadeInDuration">페이드 인 (초):</label>
+                    <input type="range" id="fadeInDuration" min="0" max="5" step="0.1" value="0">
+                    <span id="fadeInValue">0.0s</span>
+                </div>
+                <div>
+                    <label for="fadeOutDuration">페이드 아웃 (초):</label>
+                    <input type="range" id="fadeOutDuration" min="0" max="5" step="0.1" value="0">
+                    <span id="fadeOutValue">0.0s</span>
+                </div>
+                <button id="applyFadeBtn">페이드 적용</button>
+            </div>
+        </div>
+        
+        <div class="waveform-container">
+            <h3>오디오 파형</h3>
+            <canvas id="waveformCanvas" width="760" height="150"></canvas>
+        </div>
         
         <div id="logContainer"></div>
     </div>
@@ -125,6 +201,9 @@
                 
                 this.startTime = 0;
                 this.pauseTime = 0;
+                
+                this.fadeInDuration = 0;
+                this.fadeOutDuration = 0;
                 
                 this.setupAutoResume();
                 
@@ -174,6 +253,9 @@
                         detail: { duration: this.audioBuffer.duration, currentTime: 0 }
                     });
                     window.dispatchEvent(durationEvent);
+                    
+                    // 파형 생성
+                    this.createWaveform();
                     
                     return true;
                 } catch (error) {
@@ -235,7 +317,23 @@
                     // 새 소스 노드 생성 및 연결
                     this.sourceNode = this.audioContext.createBufferSource();
                     this.sourceNode.buffer = this.audioBuffer;
-                    this.sourceNode.connect(this.masterGainNode);
+                    
+                    // 페이드 인/아웃 효과 적용
+                    if (this.fadeInDuration > 0 || this.fadeOutDuration > 0) {
+                        log('페이드 효과 적용 중...');
+                        if (this.fadeInDuration > 0) {
+                            this.applyFadeIn(this.sourceNode);
+                        } else {
+                            this.sourceNode.connect(this.masterGainNode);
+                        }
+                        
+                        if (this.fadeOutDuration > 0) {
+                            this.applyFadeOut(this.sourceNode, duration);
+                        }
+                    } else {
+                        // 페이드 효과가 없는 경우 기본 연결
+                        this.sourceNode.connect(this.masterGainNode);
+                    }
                     
                     // 종료 이벤트 설정
                     this.sourceNode.onended = (event) => {
@@ -300,7 +398,7 @@
                     this.isPlaying = false;
                     this.isPaused = true;
                     
-                    log(`일시정지됨, 위치: ${this.pauseTime.toFixed(2)}초`);
+                    log(`재생 일시정지됨: ${this.pauseTime.toFixed(2)}초`);
                 } catch (error) {
                     logError('일시정지 중 오류 발생', error);
                 }
@@ -346,6 +444,85 @@
             
             getIsPaused() {
                 return this.isPaused;
+            }
+            
+            applyFadeEffect(fadeInDuration = 0, fadeOutDuration = 0) {
+                if (!this.audioBuffer) {
+                    logWarn('페이드 효과를 적용할 오디오 버퍼가 없습니다.');
+                    return false;
+                }
+                
+                this.fadeInDuration = fadeInDuration;
+                this.fadeOutDuration = fadeOutDuration;
+                
+                log(`페이드 효과 설정: 인=${fadeInDuration}초, 아웃=${fadeOutDuration}초`);
+                return true;
+            }
+            
+            applyFadeIn(sourceNode) {
+                if (this.fadeInDuration <= 0) return;
+                
+                const gainNode = this.audioContext.createGain();
+                sourceNode.connect(gainNode);
+                gainNode.connect(this.masterGainNode);
+                
+                // 시작 시 볼륨 0에서 시작
+                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                // fadeInDuration 시간에 걸쳐 볼륨 1로 증가
+                gainNode.gain.linearRampToValueAtTime(1, this.audioContext.currentTime + this.fadeInDuration);
+                
+                log(`페이드 인 효과 적용: ${this.fadeInDuration}초`);
+                return gainNode;
+            }
+            
+            applyFadeOut(sourceNode, duration) {
+                if (this.fadeOutDuration <= 0) return;
+                
+                const gainNode = this.audioContext.createGain();
+                sourceNode.connect(gainNode);
+                gainNode.connect(this.masterGainNode);
+                
+                // 현재 볼륨 1 유지
+                gainNode.gain.setValueAtTime(1, this.audioContext.currentTime);
+                
+                // 종료 시점 계산
+                const endTime = this.audioContext.currentTime + duration;
+                const fadeOutStartTime = endTime - this.fadeOutDuration;
+                
+                // fadeOutDuration 시간에 걸쳐 볼륨 0으로 감소
+                gainNode.gain.setValueAtTime(1, fadeOutStartTime);
+                gainNode.gain.linearRampToValueAtTime(0, endTime);
+                
+                log(`페이드 아웃 효과 적용: ${this.fadeOutDuration}초`);
+                return gainNode;
+            }
+            
+            createWaveform() {
+                const canvas = document.getElementById('waveformCanvas');
+                const ctx = canvas.getContext('2d');
+                
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                ctx.clearRect(0, 0, width, height);
+                
+                const bufferLength = this.audioBuffer.length;
+                const data = this.audioBuffer.getChannelData(0);
+                
+                const step = Math.ceil(bufferLength / width);
+                const scale = height / 2;
+                
+                ctx.beginPath();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                
+                for (let i = 0; i < width; i++) {
+                    const index = i * step;
+                    const value = data[index] * scale;
+                    ctx.lineTo(i, height / 2 - value);
+                }
+                
+                ctx.stroke();
             }
         }
         
@@ -419,9 +596,42 @@
         const totalDuration = document.getElementById('totalDuration');
         const progressBar = document.getElementById('progressBar');
         const logContainer = document.getElementById('logContainer');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeValue = document.getElementById('volumeValue');
+        const fadeInDuration = document.getElementById('fadeInDuration');
+        const fadeInValue = document.getElementById('fadeInValue');
+        const fadeOutDuration = document.getElementById('fadeOutDuration');
+        const fadeOutValue = document.getElementById('fadeOutValue');
+        const applyFadeBtn = document.getElementById('applyFadeBtn');
         
         // 오디오 서비스 인스턴스 생성
         const audioService = new AudioService();
+        
+        // 볼륨 조절 이벤트 리스너
+        volumeSlider.addEventListener('input', (e) => {
+            const volume = parseFloat(e.target.value);
+            audioService.masterGainNode.gain.value = volume;
+            volumeValue.textContent = `${(volume * 100).toFixed(0)}%`;
+        });
+        
+        // 페이드 인/아웃 이벤트 리스너
+        fadeInDuration.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            fadeInValue.textContent = `${value.toFixed(1)}s`;
+        });
+        
+        fadeOutDuration.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            fadeOutValue.textContent = `${value.toFixed(1)}s`;
+        });
+        
+        applyFadeBtn.addEventListener('click', () => {
+            const fadeInTime = parseFloat(fadeInDuration.value);
+            const fadeOutTime = parseFloat(fadeOutDuration.value);
+            
+            // 페이드 인/아웃 효과 적용
+            audioService.applyFadeEffect(fadeInTime, fadeOutTime);
+        });
         
         // 상태 업데이트 타이머
         let updateTimer = null;
