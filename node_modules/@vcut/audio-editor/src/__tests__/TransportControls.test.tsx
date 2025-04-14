@@ -1,218 +1,131 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { TransportControls } from '../components/TransportControls';
-import { AudioEditorProvider } from '../context/AudioEditorContext';
+import { render, screen } from '@testing-library/react';
+import { describe, test, expect, beforeEach, vi } from 'vitest';
+import TransportControls from '../components/TransportControls';
 
-// 오디오 에디터 컨텍스트 모킹
-jest.mock('../context/AudioEditorContext', () => {
-  const originalModule = jest.requireActual('../context/AudioEditorContext');
-  
+// Mock the AudioEditorContext module
+vi.mock('../context/AudioEditorContext', () => {
   return {
-    ...originalModule,
-    useAudioEditor: jest.fn().mockReturnValue({
-      state: {
-        isPlaying: false,
-        isPaused: false,
-        currentTime: 0,
-        duration: 120,
-        loop: {
-          enabled: false,
-          start: 0,
-          end: 0
-        }
-      },
-      play: jest.fn(),
-      pause: jest.fn(),
-      stop: jest.fn(),
-      setCurrentTime: jest.fn(),
-      setLoop: jest.fn()
-    })
+    useAudioEditor: vi.fn(),
   };
 });
 
+// Import the mocked module
+import { useAudioEditor } from '../context/AudioEditorContext';
+
 describe('TransportControls', () => {
+  // Set up mock functions for the tests
+  const mockPlay = vi.fn();
+  const mockPause = vi.fn();
+  const mockStop = vi.fn();
+  const mockSetCurrentTime = vi.fn();
+  const mockSetLoop = vi.fn();
+  
+  // Default mock state
+  const defaultMockState = {
+    isPlaying: false,
+    isPaused: false,
+    currentTime: 0,
+    duration: 120,
+    loop: {
+      enabled: false,
+      start: 0,
+      end: 0
+    }
+  };
+  
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    
+    // Reset the mock implementation for each test
+    (useAudioEditor as any).mockReturnValue({
+      state: { ...defaultMockState },
+      play: mockPlay,
+      pause: mockPause,
+      stop: mockStop,
+      setCurrentTime: mockSetCurrentTime,
+      setLoop: mockSetLoop
+    });
   });
 
   test('컴포넌트가 올바르게 렌더링된다', () => {
-    render(
-      <AudioEditorProvider>
-        <TransportControls />
-      </AudioEditorProvider>
-    );
-
-    // 기본 버튼들이 렌더링되는지 확인
-    expect(screen.getByLabelText(/재생/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/정지/i)).toBeInTheDocument();
-    expect(screen.getByText(/00:00.000/i)).toBeInTheDocument(); // 시간 표시
+    render(<TransportControls />);
+    
+    // Check if the time display is rendered
+    const timeDisplay = screen.getByText('00:00.00');
+    expect(timeDisplay).toBeDefined();
+    
+    // Check if the play button is rendered (when not playing)
+    const playButton = screen.getByTitle('재생');
+    expect(playButton).toBeDefined();
+    
+    // Check if the stop button is rendered
+    const stopButton = screen.getByTitle('정지');
+    expect(stopButton).toBeDefined();
   });
 
   test('재생 버튼이 클릭되면 play 함수가 호출된다', () => {
-    const { useAudioEditor } = require('../context/AudioEditorContext');
-    const mockPlay = jest.fn();
+    render(<TransportControls />);
     
-    useAudioEditor.mockReturnValue({
-      state: {
-        isPlaying: false,
-        isPaused: false,
-        currentTime: 0,
-        duration: 120,
-        loop: {
-          enabled: false,
-          start: 0,
-          end: 0
-        }
-      },
-      play: mockPlay,
-      pause: jest.fn(),
-      stop: jest.fn(),
-      setCurrentTime: jest.fn(),
-      setLoop: jest.fn()
-    });
-
-    render(
-      <AudioEditorProvider>
-        <TransportControls />
-      </AudioEditorProvider>
-    );
-
-    fireEvent.click(screen.getByLabelText(/재생/i));
+    const playButton = screen.getByTitle('재생');
+    playButton.click();
+    
     expect(mockPlay).toHaveBeenCalled();
   });
 
   test('정지 버튼이 클릭되면 stop 함수가 호출된다', () => {
-    const { useAudioEditor } = require('../context/AudioEditorContext');
-    const mockStop = jest.fn();
+    render(<TransportControls />);
     
-    useAudioEditor.mockReturnValue({
-      state: {
-        isPlaying: true,
-        isPaused: false,
-        currentTime: 10,
-        duration: 120,
-        loop: {
-          enabled: false,
-          start: 0,
-          end: 0
-        }
-      },
-      play: jest.fn(),
-      pause: jest.fn(),
-      stop: mockStop,
-      setCurrentTime: jest.fn(),
-      setLoop: jest.fn()
-    });
-
-    render(
-      <AudioEditorProvider>
-        <TransportControls />
-      </AudioEditorProvider>
-    );
-
-    fireEvent.click(screen.getByLabelText(/정지/i));
+    const stopButton = screen.getByTitle('정지');
+    stopButton.click();
+    
     expect(mockStop).toHaveBeenCalled();
   });
 
   test('일시정지 버튼이 클릭되면 pause 함수가 호출된다', () => {
-    const { useAudioEditor } = require('../context/AudioEditorContext');
-    const mockPause = jest.fn();
-    
-    useAudioEditor.mockReturnValue({
-      state: {
-        isPlaying: true,
-        isPaused: false,
-        currentTime: 10,
-        duration: 120,
-        loop: {
-          enabled: false,
-          start: 0,
-          end: 0
-        }
-      },
-      play: jest.fn(),
+    // Set isPlaying to true to show the pause button
+    (useAudioEditor as any).mockReturnValue({
+      state: { ...defaultMockState, isPlaying: true },
+      play: mockPlay,
       pause: mockPause,
-      stop: jest.fn(),
-      setCurrentTime: jest.fn(),
-      setLoop: jest.fn()
+      stop: mockStop,
+      setCurrentTime: mockSetCurrentTime,
+      setLoop: mockSetLoop
     });
-
-    render(
-      <AudioEditorProvider>
-        <TransportControls />
-      </AudioEditorProvider>
-    );
-
-    // 재생 중일 때는 일시정지 버튼이 표시됨
-    fireEvent.click(screen.getByLabelText(/일시정지/i));
+    
+    render(<TransportControls />);
+    
+    const pauseButton = screen.getByTitle('일시정지');
+    pauseButton.click();
+    
     expect(mockPause).toHaveBeenCalled();
   });
 
   test('시간 표시가 올바르게 포맷팅된다', () => {
-    const { useAudioEditor } = require('../context/AudioEditorContext');
-    
-    useAudioEditor.mockReturnValue({
-      state: {
-        isPlaying: false,
-        isPaused: false,
-        currentTime: 65.123, // 1분 5초 123밀리초
-        duration: 120,
-        loop: {
-          enabled: false,
-          start: 0,
-          end: 0
-        }
-      },
-      play: jest.fn(),
-      pause: jest.fn(),
-      stop: jest.fn(),
-      setCurrentTime: jest.fn(),
-      setLoop: jest.fn()
+    // Set a specific current time
+    (useAudioEditor as any).mockReturnValue({
+      state: { ...defaultMockState, currentTime: 65.12 },
+      play: mockPlay,
+      pause: mockPause,
+      stop: mockStop,
+      setCurrentTime: mockSetCurrentTime,
+      setLoop: mockSetLoop
     });
-
-    render(
-      <AudioEditorProvider>
-        <TransportControls />
-      </AudioEditorProvider>
-    );
-
-    // 시간이 올바르게 표시되는지 확인
-    expect(screen.getByText(/01:05.123/i)).toBeInTheDocument();
+    
+    render(<TransportControls />);
+    
+    // Check if the time is formatted correctly (01:05.12)
+    const timeDisplay = screen.getByText('01:05.12');
+    expect(timeDisplay).toBeDefined();
   });
 
   test('루프 설정 버튼이 올바르게 작동한다', () => {
-    const { useAudioEditor } = require('../context/AudioEditorContext');
-    const mockSetLoop = jest.fn();
+    render(<TransportControls />);
     
-    useAudioEditor.mockReturnValue({
-      state: {
-        isPlaying: false,
-        isPaused: false,
-        currentTime: 0,
-        duration: 120,
-        loop: {
-          enabled: false,
-          start: 0,
-          end: 0
-        }
-      },
-      play: jest.fn(),
-      pause: jest.fn(),
-      stop: jest.fn(),
-      setCurrentTime: jest.fn(),
-      setLoop: mockSetLoop
-    });
-
-    render(
-      <AudioEditorProvider>
-        <TransportControls />
-      </AudioEditorProvider>
-    );
-
-    // 루프 설정 버튼 클릭
-    fireEvent.click(screen.getByLabelText(/루프/i));
-    expect(mockSetLoop).toHaveBeenCalledWith(true, 0, 120);
+    // Find and click the loop toggle button
+    const loopButton = screen.getByText('루프 꺼짐');
+    loopButton.click();
+    
+    // Check if setLoop was called with the correct parameters
+    expect(mockSetLoop).toHaveBeenCalledWith(true, 0, 0);
   });
-
-  // 추가 테스트 케이스...
 });

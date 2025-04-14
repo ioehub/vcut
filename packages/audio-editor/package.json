@@ -20,6 +20,8 @@
     "web-audio-peak-meter": "^2.0.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.2",
+    "@testing-library/react": "^14.0.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@types/uuid": "^9.0.2",
@@ -29,8 +31,9 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "jsdom": "^22.1.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
-    "vitest": "^0.34.3"
+    "vitest": "^0.34.6"
   }
 }

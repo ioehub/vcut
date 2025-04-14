@@ -942,4 +942,4 @@ export const useAudioEditor = () => {
 };
 
 // 기본 내보내기
-export default { AudioEditorProvider, useAudioEditor };
+export { AudioEditorProvider, useAudioEditor };
