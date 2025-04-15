@@ -3,7 +3,18 @@
   "version": "0.1.0",
   "description": "미디어 제어 프로토콜 서비스 모듈 - vCut 비디오 편집기",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
@@ -25,5 +36,6 @@
     "jest": "^29.6.4",
     "ts-jest": "^29.1.1",
     "typescript": "^5.0.2"
-  }
+  },
+  "license": "MIT"
 }

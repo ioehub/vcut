@@ -193,7 +193,7 @@ const EditorPage: React.FC<EditorPageProps> = ({
             max="2" 
             step="0.1" 
             value={state.timelineState.zoom}
-            onChange={(e) => {
+            onChange={() => {
               /* setTimelineZoom 함수 호출 */
             }}
           />

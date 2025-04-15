@@ -4,6 +4,7 @@
   "description": "오디오 편집 모듈 - vCut 비디오 편집기",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

@@ -1,0 +1,145 @@
+/* Sidebar 스타일 */
+.app-sidebar {
+  width: 250px;
+  height: 100%;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  padding: 1rem;
+  overflow-y: auto;
+  border-right: 1px solid #3a3a3a;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.sidebar-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.sidebar-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.sidebar-close:hover {
+  color: #fff;
+}
+
+.sidebar-section {
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-section-title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: #aaa;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu-item {
+  padding: 0.5rem 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.sidebar-menu-item:hover {
+  background-color: #3a3a3a;
+}
+
+.sidebar-menu-item.active {
+  background-color: #444;
+}
+
+.sidebar-menu-item-icon {
+  margin-right: 0.5rem;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-menu-item-text {
+  flex: 1;
+}
+
+/* 미디어 브라우저 스타일 */
+.media-browser {
+  margin-top: 1rem;
+}
+
+.media-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.media-item:hover {
+  background-color: #3a3a3a;
+}
+
+.media-item.selected {
+  background-color: #444;
+}
+
+.media-thumbnail {
+  width: 40px;
+  height: 40px;
+  margin-right: 0.5rem;
+  background-color: #444;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.media-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-info {
+  flex: 1;
+}
+
+.media-title {
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.media-details {
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .app-sidebar {
+    width: 200px;
+  }
+}
