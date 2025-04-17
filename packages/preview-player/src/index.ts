@@ -5,5 +5,5 @@
  */
 
 export { default as PreviewPlayer } from './PreviewPlayer';
-export { PlayerProvider, usePlayer } from './PlayerContext';
+export { PreviewPlayerProvider, usePlayer } from './PlayerContext';
 export type { PreviewPlayerProps, PlayerState, PlayerAction, PlayerContextType } from './types';

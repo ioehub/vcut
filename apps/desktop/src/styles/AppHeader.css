@@ -2,12 +2,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: 50px;
   padding: 0 16px;
-  background-color: var(--bg-light);
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 1px 3px var(--shadow-color);
+  background-color: #1e1e1e; /* CapCut 스타일 어두운 헤더 */
+  border-bottom: 1px solid #3a3a3a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   z-index: 100;
+  color: #f1f1f1;
 }
 
 .header-left {
@@ -27,7 +28,7 @@
 }
 
 .menu-toggle:hover {
-  background-color: var(--bg-dark);
+  background-color: #333333;
 }
 
 .menu-icon {
@@ -37,7 +38,7 @@
 .app-title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--primary-color);
+  color: #4285f4; /* CapCut 스타일 강조색 */
 }
 
 .header-center {
@@ -55,11 +56,12 @@
 .project-name {
   font-size: 16px;
   font-weight: 500;
+  color: #f1f1f1;
 }
 
 .project-status {
   font-size: 12px;
-  color: var(--text-light);
+  color: #a0a0a0;
 }
 
 .header-right {
@@ -74,10 +76,11 @@
   padding: 8px 12px;
   border-radius: 4px;
   transition: background-color 0.2s;
+  color: #f1f1f1;
 }
 
 .header-button:hover {
-  background-color: var(--bg-dark);
+  background-color: #333333;
 }
 
 .button-icon {

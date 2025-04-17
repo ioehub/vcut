@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { PreviewPlayerProps } from './types';
-import { PlayerProvider, usePlayer } from './PlayerContext';
+import { PreviewPlayerProvider, usePlayer } from './PlayerContext';
 import PlayerControls from './PlayerControls';
 import './PreviewPlayer.css';
 
@@ -193,9 +193,9 @@ const PlayerComponent: React.FC<PreviewPlayerProps> = ({
  */
 const PreviewPlayer: React.FC<PreviewPlayerProps> = (props) => {
   return (
-    <PlayerProvider>
+    <PreviewPlayerProvider>
       <PlayerComponent {...props} />
-    </PlayerProvider>
+    </PreviewPlayerProvider>
   );
 };
 

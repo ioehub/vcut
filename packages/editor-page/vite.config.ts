@@ -18,7 +18,16 @@ export default defineConfig({
           react: 'React',
           'react-dom': 'ReactDOM',
         },
+        // CSS를 JS로 인라인하는 설정
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === 'style.css') {
+            return 'assets/[name][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
+        },
       },
     },
+    // CSS 모듈을 JS로 인라인
+    cssCodeSplit: false,
   },
 });

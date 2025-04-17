@@ -8,8 +8,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'VCutAudioEditor',
-      fileName: 'vcut-audio-editor'
+      name: 'AudioEditor',
+      fileName: (format) => `index.${format}.js`,
     },
     rollupOptions: {
       // React는 외부 의존성으로 처리

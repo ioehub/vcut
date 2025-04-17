@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Effect, EffectType, EffectCategory, AppliedEffect, EffectParameter } from '../types';
+import { Effect, EffectType, EffectCategory, AppliedEffect } from '../types';
 
 /**
  * 효과 관리 서비스 클래스

@@ -129,7 +129,7 @@ const PlayerComponent = ({ src, autoPlay = false, controls = true, loop = false,
  * 기본 HTML5 비디오 플레이어 기능과 함께 추가 기능을 제공합니다.
  */
 const PreviewPlayer = (props) => {
-    return ((0, jsx_runtime_1.jsx)(PlayerContext_1.PlayerProvider, { children: (0, jsx_runtime_1.jsx)(PlayerComponent, Object.assign({}, props)) }));
+    return ((0, jsx_runtime_1.jsx)(PlayerContext_1.PreviewPlayerProvider, { children: (0, jsx_runtime_1.jsx)(PlayerComponent, Object.assign({}, props)) }));
 };
 exports.default = PreviewPlayer;
 //# sourceMappingURL=PreviewPlayer.js.map

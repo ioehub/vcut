@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { EffectsProvider, useEffects } from '../context/EffectsContext';
 import { EffectsList } from '../components/EffectsList';
@@ -43,52 +43,165 @@ const TestEffectsContent: React.FC = () => {
   };
 
   return (
-    <div className="test-effects">
-      <header>
-        <h1>효과 모듈 테스트 페이지</h1>
+    <div 
+      className="test-effects"
+      style={{
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif',
+        color: '#333',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '20px'
+      }}
+    >
+      <header 
+        style={{
+          marginBottom: '24px',
+          paddingBottom: '12px',
+          borderBottom: '1px solid #e8e8e8'
+        }}
+      >
+        <h1 style={{ fontSize: '24px', margin: 0 }}>효과 모듈 테스트 페이지</h1>
       </header>
 
-      <div className="container">
-        <div className="sidebar">
-          <div className="section">
-            <h2>클립 목록</h2>
-            <div className="clips-list">
+      <div 
+        className="container"
+        style={{
+          display: 'flex',
+          gap: '24px'
+        }}
+      >
+        <div 
+          className="sidebar"
+          style={{
+            width: '300px',
+            flexShrink: 0
+          }}
+        >
+          <div 
+            className="section"
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: '4px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              padding: '16px',
+              marginBottom: '20px'
+            }}
+          >
+            <h2 style={{ fontSize: '18px', marginTop: 0, marginBottom: '12px' }}>클립 목록</h2>
+            <div 
+              className="clips-list"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}
+            >
               {dummyClips.map(clip => (
                 <div 
                   key={clip.id} 
                   className={`clip-item ${selectedClip === clip.id ? 'selected' : ''}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '8px 12px',
+                    backgroundColor: '#f5f5f5',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
                   onClick={() => setSelectedClip(clip.id)}
                 >
-                  <div className={`clip-type ${clip.type}`}></div>
+                  <div 
+                    className={`clip-type ${clip.type}`}
+                    style={{
+                      width: '12px',
+                      height: '12px',
+                      borderRadius: '50%',
+                      marginRight: '8px'
+                    }}
+                  ></div>
                   <div className="clip-name">{clip.name}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="section">
-            <h2>효과 필터</h2>
-            <div className="effect-filters">
+          <div 
+            className="section"
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: '4px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              padding: '16px',
+              marginBottom: '20px'
+            }}
+          >
+            <h2 style={{ fontSize: '18px', marginTop: 0, marginBottom: '12px' }}>효과 필터</h2>
+            <div 
+              className="effect-filters"
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                marginBottom: '12px'
+              }}
+            >
               <button 
                 className={selectedEffectType === undefined ? 'active' : ''}
+                style={{
+                  padding: '6px 12px',
+                  backgroundColor: '#f5f5f5',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  transition: 'all 0.2s'
+                }}
                 onClick={() => setSelectedEffectType(undefined)}
               >
                 모든 효과
               </button>
               <button 
                 className={selectedEffectType === EffectType.VIDEO ? 'active' : ''}
+                style={{
+                  padding: '6px 12px',
+                  backgroundColor: '#f5f5f5',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  transition: 'all 0.2s'
+                }}
                 onClick={() => setSelectedEffectType(EffectType.VIDEO)}
               >
                 비디오 효과
               </button>
               <button 
                 className={selectedEffectType === EffectType.AUDIO ? 'active' : ''}
+                style={{
+                  padding: '6px 12px',
+                  backgroundColor: '#f5f5f5',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  transition: 'all 0.2s'
+                }}
                 onClick={() => setSelectedEffectType(EffectType.AUDIO)}
               >
                 오디오 효과
               </button>
               <button 
                 className={selectedEffectType === EffectType.TRANSITION ? 'active' : ''}
+                style={{
+                  padding: '6px 12px',
+                  backgroundColor: '#f5f5f5',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  transition: 'all 0.2s'
+                }}
                 onClick={() => setSelectedEffectType(EffectType.TRANSITION)}
               >
                 전환 효과
@@ -96,7 +209,16 @@ const TestEffectsContent: React.FC = () => {
             </div>
           </div>
 
-          <div className="section">
+          <div 
+            className="section"
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: '4px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              padding: '16px',
+              marginBottom: '20px'
+            }}
+          >
             <EffectsList 
               type={selectedEffectType}
               onSelectEffect={handleSelectEffect}
@@ -104,179 +226,100 @@ const TestEffectsContent: React.FC = () => {
           </div>
         </div>
 
-        <div className="main-content">
-          <div className="section">
-            <h2>적용된 효과</h2>
+        <div 
+          className="main-content"
+          style={{
+            flex: 1
+          }}
+        >
+          <div 
+            className="section"
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: '4px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              padding: '16px',
+              marginBottom: '20px'
+            }}
+          >
+            <h2 style={{ fontSize: '18px', marginTop: 0, marginBottom: '12px' }}>적용된 효과</h2>
             {selectedClip ? (
-              <div className="applied-effects">
+              <div 
+                className="applied-effects"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px'
+                }}
+              >
                 {getAppliedEffectsForClip().length === 0 ? (
-                  <p>이 클립에 적용된 효과가 없습니다</p>
+                  <p style={{ color: '#666' }}>이 클립에 적용된 효과가 없습니다</p>
                 ) : (
                   getAppliedEffectsForClip().map(effect => (
-                    <div key={effect.id} className="applied-effect">
+                    <div 
+                      key={effect.id} 
+                      className="applied-effect"
+                      style={{
+                        backgroundColor: '#f9f9f9',
+                        padding: '12px',
+                        borderRadius: '4px',
+                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                      }}
+                    >
                       <EffectEditor effectId={effect.id} />
                     </div>
                   ))
                 )}
               </div>
             ) : (
-              <p>클립을 선택하여 적용된 효과를 확인하세요</p>
+              <p style={{ color: '#666' }}>클립을 선택하여 적용된 효과를 확인하세요</p>
             )}
           </div>
 
-          <div className="section">
-            <h2>미리보기</h2>
-            <div className="preview-container">
-              <div className="video-preview">
+          <div 
+            className="section"
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: '4px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              padding: '16px',
+              marginBottom: '20px'
+            }}
+          >
+            <h2 style={{ fontSize: '18px', marginTop: 0, marginBottom: '12px' }}>미리보기</h2>
+            <div 
+              className="preview-container"
+              style={{
+                backgroundColor: '#f0f0f0',
+                borderRadius: '4px',
+                height: '300px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <div 
+                className="video-preview"
+                style={{
+                  textAlign: 'center'
+                }}
+              >
                 <p>여기에 효과가 적용된 비디오 미리보기가 표시됩니다</p>
-                <div className="placeholder-video"></div>
+                <div 
+                  className="placeholder-video"
+                  style={{
+                    width: '480px',
+                    height: '270px',
+                    backgroundColor: '#000',
+                    margin: '0 auto',
+                    borderRadius: '4px'
+                  }}
+                ></div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .test-effects {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-          color: #333;
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        
-        header {
-          margin-bottom: 24px;
-          padding-bottom: 12px;
-          border-bottom: 1px solid #e8e8e8;
-        }
-        
-        h1 {
-          font-size: 24px;
-          margin: 0;
-        }
-        
-        h2 {
-          font-size: 18px;
-          margin-top: 0;
-          margin-bottom: 12px;
-        }
-        
-        .container {
-          display: flex;
-          gap: 24px;
-        }
-        
-        .sidebar {
-          width: 300px;
-          flex-shrink: 0;
-        }
-        
-        .main-content {
-          flex: 1;
-        }
-        
-        .section {
-          background-color: #fff;
-          border-radius: 4px;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-          padding: 16px;
-          margin-bottom: 20px;
-        }
-        
-        .clips-list {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-        
-        .clip-item {
-          display: flex;
-          align-items: center;
-          padding: 8px 12px;
-          background-color: #f5f5f5;
-          border-radius: 4px;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-        
-        .clip-item:hover {
-          background-color: #e8e8e8;
-        }
-        
-        .clip-item.selected {
-          background-color: #e6f7ff;
-          border-left: 3px solid #1890ff;
-        }
-        
-        .clip-type {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          margin-right: 8px;
-        }
-        
-        .clip-type.video {
-          background-color: #1890ff;
-        }
-        
-        .clip-type.audio {
-          background-color: #52c41a;
-        }
-        
-        .effect-filters {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-          margin-bottom: 12px;
-        }
-        
-        .effect-filters button {
-          padding: 6px 12px;
-          background-color: #f5f5f5;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-          transition: all 0.2s;
-        }
-        
-        .effect-filters button:hover {
-          background-color: #e8e8e8;
-        }
-        
-        .effect-filters button.active {
-          background-color: #1890ff;
-          color: white;
-        }
-        
-        .applied-effects {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-        
-        .preview-container {
-          background-color: #f0f0f0;
-          border-radius: 4px;
-          height: 300px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        
-        .video-preview {
-          text-align: center;
-        }
-        
-        .placeholder-video {
-          width: 480px;
-          height: 270px;
-          background-color: #000;
-          margin: 0 auto;
-          border-radius: 4px;
-        }
-      `}</style>
     </div>
   );
 };

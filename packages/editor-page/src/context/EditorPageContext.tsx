@@ -2,6 +2,17 @@ import React, { createContext, useContext, useReducer, ReactNode, useCallback } 
 import { v4 as uuidv4 } from 'uuid';
 import { EditorPageState, EditorPageAction, MediaFile } from '../types';
 
+// MCPServiceFactory와 FFmpegService 타입 정의 (임포트 대신 인터페이스로 정의)
+interface MCPServiceFactory {
+  // 필요한 메서드와 속성 정의
+  createAdapter: (element: HTMLMediaElement) => any;
+}
+
+interface FFmpegService {
+  // 필요한 메서드와 속성 정의
+  applyFilter?: (input: string, output: string, options: any) => Promise<string>;
+}
+
 // 초기 상태 정의
 const initialState: EditorPageState = {
   currentMode: 'video',
@@ -181,6 +192,8 @@ const EditorPageContext = createContext<{
   undo: () => void;
   redo: () => void;
   resetState: (initialData?: Partial<EditorPageState>) => void;
+  mcpFactory?: MCPServiceFactory;
+  ffmpegService?: FFmpegService;
 }>({
   state: initialState,
   dispatch: () => {},
@@ -199,8 +212,19 @@ const EditorPageContext = createContext<{
   resetState: () => {}
 });
 
+// Provider 컴포넌트의 props 타입 정의
+interface EditorPageProviderProps {
+  children: ReactNode;
+  mcpFactory: MCPServiceFactory;
+  ffmpegService: FFmpegService;
+}
+
 // Provider 컴포넌트
-export const EditorPageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const EditorPageProvider: React.FC<EditorPageProviderProps> = ({ 
+  children, 
+  mcpFactory, 
+  ffmpegService 
+}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   // 액션 생성 함수들
@@ -277,7 +301,9 @@ export const EditorPageProvider: React.FC<{ children: ReactNode }> = ({ children
         toggleFullscreen,
         undo,
         redo,
-        resetState
+        resetState,
+        mcpFactory,
+        ffmpegService
       }}
     >
       {children}

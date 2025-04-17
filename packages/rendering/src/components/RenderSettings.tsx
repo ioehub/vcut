@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { RenderSettings, RenderPreset } from '../types';
+import React, { useState, CSSProperties } from 'react';
+import { RenderSettings } from '../types';
 import { RenderPresets } from '../utils/renderPresets';
 
 interface RenderSettingsProps {
@@ -51,7 +51,7 @@ const RenderSettingsComponent: React.FC<RenderSettingsProps> = ({
       const newSettings = {
         ...settings,
         [parentField]: {
-          ...settings[parentField as keyof RenderSettings],
+          ...(settings[parentField as keyof RenderSettings] as Record<string, any>),
           [childField]: value
         }
       };
@@ -129,7 +129,15 @@ const RenderSettingsComponent: React.FC<RenderSettingsProps> = ({
   ];
 
   return (
-    <div className="render-settings">
+    <div 
+      className="render-settings" 
+      style={{
+        fontFamily: 'Noto Sans KR, sans-serif',
+        padding: '16px',
+        maxWidth: '800px',
+        margin: '0 auto'
+      }}
+    >
       <h2>렌더링 설정</h2>
       
       <div className="settings-group">
@@ -299,91 +307,6 @@ const RenderSettingsComponent: React.FC<RenderSettingsProps> = ({
           <p><strong>오디오:</strong> {settings.audioSettings.codec}, {(settings.audioSettings.bitrate / 1000).toFixed(0)} kbps, {(settings.audioSettings.sampleRate / 1000).toFixed(1)} kHz, {settings.audioSettings.channels}채널</p>
         </div>
       </div>
-
-      <style jsx>{`
-        .render-settings {
-          font-family: 'Noto Sans KR', sans-serif;
-          padding: 16px;
-          max-width: 800px;
-          margin: 0 auto;
-        }
-        
-        h2 {
-          margin-top: 0;
-          margin-bottom: 24px;
-          font-size: 24px;
-          color: #333;
-        }
-        
-        h3 {
-          margin-top: 16px;
-          margin-bottom: 12px;
-          font-size: 18px;
-          color: #333;
-        }
-        
-        .settings-group {
-          background-color: #f9f9f9;
-          border-radius: 8px;
-          padding: 16px;
-          margin-bottom: 24px;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .settings-row {
-          display: flex;
-          flex-wrap: wrap;
-          margin: 0 -8px;
-        }
-        
-        .settings-field {
-          flex: 1;
-          min-width: 200px;
-          padding: 0 8px;
-          margin-bottom: 16px;
-        }
-        
-        label {
-          display: block;
-          margin-bottom: 6px;
-          font-weight: 500;
-          font-size: 14px;
-        }
-        
-        select, input[type="number"] {
-          width: 100%;
-          padding: 8px 12px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-          font-size: 14px;
-          font-family: inherit;
-        }
-        
-        .settings-field.checkbox {
-          display: flex;
-          align-items: center;
-        }
-        
-        .settings-field.checkbox input {
-          margin-right: 8px;
-        }
-        
-        .settings-field.checkbox label {
-          margin-bottom: 0;
-        }
-        
-        .summary-box {
-          background-color: #fff;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-          padding: 12px;
-          font-size: 14px;
-        }
-        
-        .summary-box p {
-          margin: 6px 0;
-        }
-      `}</style>
     </div>
   );
 };

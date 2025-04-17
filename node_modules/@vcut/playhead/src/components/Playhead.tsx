@@ -18,13 +18,13 @@ export const Playhead: React.FC<PlayheadProps> = ({
   timelineOffset = 80, // 기본값: 트랙 레이블 너비
   onTimeChange,
   onPlayPause,
-  onInOutPointChange,
+  _onInOutPointChange, // 현재 사용되지 않음
   onDragStart,
   onDragEnd
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const playheadRef = useRef<HTMLDivElement>(null);
-  const lastFrameTime = useRef<number>(0);
+  // const lastFrameTime = useRef<number>(0); // 현재 사용되지 않음
   const animationFrameId = useRef<number>();
 
   // 재생 애니메이션 처리

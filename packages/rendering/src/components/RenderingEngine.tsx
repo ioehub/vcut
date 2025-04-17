@@ -48,8 +48,8 @@ const RenderingEngine: React.FC<RenderingEngineProps> = ({
       };
       
       if (onComplete) onComplete(completedJob);
-    } catch (error) {
-      const failedJob = { 
+    } catch (error: any) {
+      const _failedJob = { 
         ...updatedJob, 
         status: 'failed' as const, 
         endTime: new Date(),
@@ -64,7 +64,7 @@ const RenderingEngine: React.FC<RenderingEngineProps> = ({
   
   // 렌더링 진행 상황을 시뮬레이션
   const simulateRendering = (renderJob: RenderJob): Promise<void> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       let progress = 0;
       const totalDuration = renderJob.settings.useHardwareAcceleration ? 5000 : 15000; // 하드웨어 가속 유무에 따라 시간 차이
       const interval = 100;

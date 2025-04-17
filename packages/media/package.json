@@ -3,6 +3,16 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "main": "./dist/vcut-media.umd.cjs",
+  "module": "./dist/vcut-media.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/vcut-media.js",
+      "require": "./dist/vcut-media.umd.cjs"
+    }
+  },
+  "files": ["dist"],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

@@ -1,75 +1,70 @@
-/* Editor Page Styles */
-
+/* 에디터 페이지 기본 스타일 */
 .editor-page {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  width: 100%;
+  height: 100%;
+  background-color: #1e1e1e; /* CapCut 스타일 어두운 배경 */
+  color: #f1f1f1;
+  overflow: hidden;
+}
+
+.editor-page-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
   background-color: #1e1e1e;
-  color: #e0e0e0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #f1f1f1;
 }
 
-.editor-page.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 9999;
-}
-
-/* Toolbar */
+/* 툴바 영역 */
 .editor-page-toolbar {
-  height: 50px;
-  background-color: #2d2d2d;
-  border-bottom: 1px solid #3d3d3d;
+  height: 40px;
+  background-color: #2d2d2d; /* CapCut 스타일 툴바 */
+  border-bottom: 1px solid #3a3a3a;
   display: flex;
   align-items: center;
   padding: 0 10px;
+  z-index: 10;
 }
 
-/* Main Content */
+/* 메인 콘텐츠 영역 */
 .editor-page-content {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-/* Sidebar */
+/* 사이드바 */
 .editor-page-sidebar {
-  width: 300px;
-  background-color: #252525;
-  border-right: 1px solid #3d3d3d;
+  width: 260px;
+  background-color: #252525; /* CapCut 스타일 사이드바 */
+  border-right: 1px solid #3a3a3a;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .sidebar-tabs {
   display: flex;
   background-color: #2d2d2d;
-  border-bottom: 1px solid #3d3d3d;
+  border-bottom: 1px solid #3a3a3a;
 }
 
 .sidebar-tabs button {
   flex: 1;
-  padding: 10px;
+  padding: 8px 0;
   background: none;
   border: none;
   color: #a0a0a0;
-  cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s ease;
-}
-
-.sidebar-tabs button:hover {
-  background-color: #333333;
-  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .sidebar-tabs button.active {
-  background-color: #007acc;
-  color: #ffffff;
+  color: #4285f4; /* CapCut 스타일 강조색 */
+  border-bottom: 2px solid #4285f4;
 }
 
 .sidebar-content {
@@ -78,7 +73,7 @@
   padding: 10px;
 }
 
-/* Main Editing Area */
+/* 메인 편집 영역 */
 .editor-page-main {
   flex: 1;
   display: flex;
@@ -86,15 +81,15 @@
   overflow: hidden;
 }
 
-/* Preview Area */
+/* 미리보기 영역 */
 .editor-page-preview {
-  flex: 2;
-  background-color: #1a1a1a;
+  flex: 1;
+  background-color: #1a1a1a; /* CapCut 스타일 미리보기 배경 */
   position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
-  border-bottom: 1px solid #3d3d3d;
+  align-items: center;
+  min-height: 200px;
 }
 
 .toggle-sidebar-btn {
@@ -102,43 +97,40 @@
   left: 0;
   top: 50%;
   transform: translateY(-50%);
+  width: 20px;
+  height: 40px;
   background-color: rgba(45, 45, 45, 0.7);
+  color: #f1f1f1;
   border: none;
-  color: #e0e0e0;
-  width: 24px;
-  height: 60px;
-  cursor: pointer;
-  z-index: 10;
   border-radius: 0 4px 4px 0;
-  transition: all 0.2s ease;
+  cursor: pointer;
+  z-index: 5;
 }
 
-.toggle-sidebar-btn:hover {
-  background-color: rgba(60, 60, 60, 0.9);
-}
-
-/* Timeline Area */
+/* 타임라인 영역 */
 .editor-page-timeline {
-  flex: 1;
-  min-height: 200px;
-  background-color: #252525;
+  height: 200px;
+  background-color: #252525; /* CapCut 스타일 타임라인 */
+  border-top: 1px solid #3a3a3a;
   overflow: hidden;
 }
 
-/* Status Bar */
+/* 상태 바 */
 .editor-page-statusbar {
   height: 30px;
-  background-color: #2d2d2d;
-  border-top: 1px solid #3d3d3d;
+  background-color: #2d2d2d; /* CapCut 스타일 상태바 */
+  border-top: 1px solid #3a3a3a;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 15px;
+  padding: 0 10px;
   font-size: 12px;
+  color: #a0a0a0;
 }
 
 .project-info {
-  color: #a0a0a0;
+  display: flex;
+  align-items: center;
 }
 
 .zoom-controls {
@@ -146,23 +138,120 @@
   align-items: center;
 }
 
-.zoom-controls label {
-  margin-right: 10px;
-  color: #a0a0a0;
-}
-
-.zoom-controls input[type="range"] {
+.zoom-controls input {
   width: 100px;
+  margin: 0 10px;
 }
 
-/* Loading State */
-.editor-page-loading {
+/* CapCut 스타일 타임라인 트랙 */
+.timeline-track {
+  height: 50px;
+  margin: 5px 0;
+  background-color: #303030;
+  border-radius: 4px;
+  position: relative;
+}
+
+.timeline-clip {
+  position: absolute;
+  height: 100%;
+  background-color: #4285f4;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.timeline-clip:hover {
+  background-color: #5c9aff;
+}
+
+/* CapCut 스타일 미디어 아이템 */
+.media-item {
+  display: flex;
+  padding: 8px;
+  margin-bottom: 8px;
+  background-color: #303030;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.media-item:hover {
+  background-color: #3a3a3a;
+}
+
+.media-item.selected {
+  background-color: #3b71ca;
+}
+
+.media-thumbnail {
+  width: 80px;
+  height: 45px;
+  background-color: #1a1a1a;
+  margin-right: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.media-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.media-name {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.media-duration {
+  font-size: 12px;
+  color: #a0a0a0;
+}
+
+/* CapCut 스타일 효과 패널 */
+.effects-panel {
+  padding: 10px;
+}
+
+.effects-category {
+  margin-bottom: 15px;
+}
+
+.effects-category-title {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #f1f1f1;
+}
+
+.effects-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.effect-item {
+  padding: 8px;
+  background-color: #303030;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.effect-item:hover {
+  background-color: #3a3a3a;
+}
+
+/* 전체화면 모드 */
+.editor-page.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
   height: 100vh;
-  width: 100%;
-  background-color: #1e1e1e;
-  color: #e0e0e0;
-  font-size: 18px;
+  z-index: 1000;
 }

@@ -226,7 +226,8 @@ const EffectsPanel: React.FC = () => {
     }
     
     // 새 효과 추가
-    const newEffect: Omit<AudioEffect, 'id'> = {
+    const newEffect: AudioEffect = {
+      id: `effect-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       name: getEffectTypeName(selectedEffectType),
       type: selectedEffectType,
       enabled: true,

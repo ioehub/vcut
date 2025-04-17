@@ -1,6 +1,6 @@
-﻿import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Timeline } from "../components/Timeline";
-import { Track, Clip } from "../types";
+import { Track } from "../types";
 
 // Mock data for testing
 const initialTracks: Track[] = [
@@ -70,7 +70,7 @@ const initialTracks: Track[] = [
 export const TestTimeline: React.FC = () => {
   const [tracks, setTracks] = useState<Track[]>(initialTracks);
   const [scale, setScale] = useState<number>(100); // 100px per second
-  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [currentTime] = useState<number>(0);
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const containerRef = useRef<HTMLDivElement>(null);
 

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usePlayer = exports.PlayerProvider = void 0;
+exports.usePlayer = exports.PreviewPlayerProvider = void 0;
 const jsx_runtime_1 = require("react/jsx-runtime");
 const react_1 = require("react");
 // 초기 플레이어 상태
@@ -44,18 +44,18 @@ function playerReducer(state, action) {
 // 플레이어 컨텍스트 생성
 const PlayerContext = (0, react_1.createContext)(undefined);
 // 플레이어 컨텍스트 제공자 컴포넌트
-const PlayerProvider = ({ children }) => {
+const PreviewPlayerProvider = ({ children }) => {
     const [state, dispatch] = (0, react_1.useReducer)(playerReducer, initialState);
     const videoRef = (0, react_1.useRef)(null);
     const value = { state, dispatch, videoRef };
     return (0, jsx_runtime_1.jsx)(PlayerContext.Provider, { value: value, children: children });
 };
-exports.PlayerProvider = PlayerProvider;
+exports.PreviewPlayerProvider = PreviewPlayerProvider;
 // 플레이어 컨텍스트 사용 훅
 const usePlayer = () => {
     const context = (0, react_1.useContext)(PlayerContext);
     if (context === undefined) {
-        throw new Error('usePlayer must be used within a PlayerProvider');
+        throw new Error('usePlayer must be used within a PreviewPlayerProvider');
     }
     return context;
 };

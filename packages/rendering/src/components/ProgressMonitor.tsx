@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 interface ProgressMonitorProps {
   progress: number;
@@ -35,89 +35,83 @@ const ProgressMonitor: React.FC<ProgressMonitorProps> = ({
     return `약 ${hours}시간 ${remainingMinutes}분 남음`;
   };
 
+  // CSS 스타일을 객체로 정의
+  const styles = {
+    progressMonitor: {
+      backgroundColor: '#f5f5f5',
+      borderRadius: '8px',
+      padding: '16px',
+      margin: '16px 0',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      fontFamily: "'Noto Sans KR', sans-serif"
+    } as CSSProperties,
+    progressHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '12px'
+    } as CSSProperties,
+    headerTitle: {
+      margin: 0,
+      fontSize: '18px'
+    } as CSSProperties,
+    statusBadge: {
+      backgroundColor: '#4CAF50',
+      color: 'white',
+      padding: '4px 8px',
+      borderRadius: '4px',
+      fontSize: '14px'
+    } as CSSProperties,
+    progressBarContainer: {
+      height: '24px',
+      backgroundColor: '#e0e0e0',
+      borderRadius: '12px',
+      overflow: 'hidden',
+      marginBottom: '8px',
+      position: 'relative' as const
+    } as CSSProperties,
+    progressBar: (width: string): CSSProperties => ({
+      height: '100%',
+      background: 'linear-gradient(90deg, #4CAF50, #8BC34A)',
+      borderRadius: '12px',
+      transition: 'width 0.3s ease',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width
+    }),
+    progressPercentage: {
+      color: 'white',
+      fontWeight: 'bold',
+      textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)'
+    } as CSSProperties,
+    progressInfo: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      fontSize: '14px',
+      color: '#666'
+    } as CSSProperties,
+    timeRemaining: {
+      fontWeight: 500
+    } as CSSProperties
+  };
+
   return (
-    <div className="progress-monitor">
-      <div className="progress-header">
-        <h3>렌더링 진행 상황</h3>
-        <span className="status-badge">{status}</span>
+    <div style={styles.progressMonitor}>
+      <div style={styles.progressHeader}>
+        <h3 style={styles.headerTitle}>렌더링 진행 상황</h3>
+        <span style={styles.statusBadge}>{status}</span>
       </div>
       
-      <div className="progress-bar-container">
-        <div className="progress-bar" style={{ width: `${progress}%` }}>
-          <span className="progress-percentage">{progress}%</span>
+      <div style={styles.progressBarContainer}>
+        <div style={styles.progressBar(`${progress}%`)}>
+          <span style={styles.progressPercentage}>{progress}%</span>
         </div>
       </div>
       
-      <div className="progress-info">
-        <div className="time-remaining">{formatTimeRemaining(timeRemaining)}</div>
+      <div style={styles.progressInfo}>
+        <div style={styles.timeRemaining}>{formatTimeRemaining(timeRemaining)}</div>
       </div>
-      
-      <style jsx>{`
-        .progress-monitor {
-          background-color: #f5f5f5;
-          border-radius: 8px;
-          padding: 16px;
-          margin: 16px 0;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          font-family: 'Noto Sans KR', sans-serif;
-        }
-        
-        .progress-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 12px;
-        }
-        
-        .progress-header h3 {
-          margin: 0;
-          font-size: 18px;
-        }
-        
-        .status-badge {
-          background-color: #4CAF50;
-          color: white;
-          padding: 4px 8px;
-          border-radius: 4px;
-          font-size: 14px;
-        }
-        
-        .progress-bar-container {
-          height: 24px;
-          background-color: #e0e0e0;
-          border-radius: 12px;
-          overflow: hidden;
-          margin-bottom: 8px;
-          position: relative;
-        }
-        
-        .progress-bar {
-          height: 100%;
-          background: linear-gradient(90deg, #4CAF50, #8BC34A);
-          border-radius: 12px;
-          transition: width 0.3s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        
-        .progress-percentage {
-          color: white;
-          font-weight: bold;
-          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        }
-        
-        .progress-info {
-          display: flex;
-          justify-content: space-between;
-          font-size: 14px;
-          color: #666;
-        }
-        
-        .time-remaining {
-          font-weight: 500;
-        }
-      `}</style>
     </div>
   );
 };

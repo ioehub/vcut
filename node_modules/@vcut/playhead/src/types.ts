@@ -30,6 +30,8 @@ export interface PlayheadProps extends PlayheadOptions {
   onPlayPause?: (isPlaying: boolean) => void;
   /** 인/아웃 포인트 변경 핸들러 */
   onInOutPointChange?: (inPoint: number | undefined, outPoint: number | undefined) => void;
+  /** 인/아웃 포인트 변경 핸들러 (deprecated) */
+  _onInOutPointChange?: (inPoint: number | undefined, outPoint: number | undefined) => void;
   /** 드래그 시작 핸들러 */
   onDragStart?: () => void;
   /** 드래그 종료 핸들러 */
@@ -47,6 +49,8 @@ export interface PlayheadControlsProps {
   playbackRate: number;
   /** 현재 시간 변경 핸들러 */
   onTimeChange: (time: number) => void;
+  /** 현재 시간 변경 핸들러 (deprecated) */
+  _onTimeChange?: (time: number) => void;
   /** 재생 상태 변경 핸들러 */
   onPlayPause: (isPlaying: boolean) => void;
   /** 재생 속도 변경 핸들러 */

@@ -17,7 +17,20 @@ export const EffectEditor: React.FC<EffectEditorProps> = ({ effectId }) => {
   const appliedEffect = state.appliedEffects.find(effect => effect.id === effectId);
   
   if (!appliedEffect) {
-    return <div className="effect-editor-error">선택된 효과를 찾을 수 없습니다.</div>;
+    return (
+      <div 
+        className="effect-editor-error"
+        style={{
+          padding: '16px',
+          color: '#ff4d4f',
+          backgroundColor: '#fff1f0',
+          border: '1px solid #ffccc7',
+          borderRadius: '4px'
+        }}
+      >
+        선택된 효과를 찾을 수 없습니다.
+      </div>
+    );
   }
   
   // 효과 파라미터 변경 처리
@@ -37,23 +50,64 @@ export const EffectEditor: React.FC<EffectEditorProps> = ({ effectId }) => {
   };
 
   return (
-    <div className="effect-editor">
-      <div className="effect-header">
-        <h3>{appliedEffect.name}</h3>
+    <div 
+      className="effect-editor"
+      style={{
+        padding: '16px',
+        backgroundColor: '#f5f5f5',
+        borderRadius: '4px',
+        marginBottom: '16px'
+      }}
+    >
+      <div 
+        className="effect-header"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '16px'
+        }}
+      >
+        <h3 style={{ margin: 0 }}>{appliedEffect.name}</h3>
         <div className="effect-actions">
           <button
             className={`toggle-button ${appliedEffect.isEnabled ? 'enabled' : 'disabled'}`}
             onClick={handleToggleEnabled}
+            style={{
+              padding: '4px 8px',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
           >
             {appliedEffect.isEnabled ? '활성화됨' : '비활성화됨'}
           </button>
-          <button className="remove-button" onClick={handleRemoveEffect}>
+          <button 
+            className="remove-button"
+            onClick={handleRemoveEffect}
+            style={{
+              backgroundColor: '#ff4d4f',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '4px 8px',
+              cursor: 'pointer'
+            }}
+          >
             제거
           </button>
         </div>
       </div>
 
-      <div className="effect-parameters">
+      <div 
+        className="effect-parameters"
+        style={{
+          backgroundColor: 'white',
+          padding: '12px',
+          borderRadius: '4px',
+          boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
+        }}
+      >
         {appliedEffect.parameters.map(param => (
           <EffectParameterEditor
             key={param.id}
@@ -62,76 +116,6 @@ export const EffectEditor: React.FC<EffectEditorProps> = ({ effectId }) => {
           />
         ))}
       </div>
-
-      <style jsx>{`
-        .effect-editor {
-          padding: 16px;
-          background-color: #f5f5f5;
-          border-radius: 4px;
-          margin-bottom: 16px;
-        }
-        
-        .effect-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 16px;
-        }
-        
-        .effect-header h3 {
-          margin: 0;
-        }
-        
-        .effect-actions {
-          display: flex;
-          gap: 8px;
-        }
-        
-        .toggle-button {
-          padding: 4px 8px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-        
-        .toggle-button.enabled {
-          background-color: #52c41a;
-          color: white;
-        }
-        
-        .toggle-button.disabled {
-          background-color: #d9d9d9;
-          color: rgba(0, 0, 0, 0.65);
-        }
-        
-        .remove-button {
-          padding: 4px 8px;
-          background-color: #ff4d4f;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-        
-        .remove-button:hover {
-          background-color: #ff7875;
-        }
-        
-        .effect-parameters {
-          background-color: white;
-          padding: 12px;
-          border-radius: 4px;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
-        
-        .effect-editor-error {
-          padding: 16px;
-          color: #ff4d4f;
-          background-color: #fff1f0;
-          border: 1px solid #ffccc7;
-          border-radius: 4px;
-        }
-      `}</style>
     </div>
   );
 };

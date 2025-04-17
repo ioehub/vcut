@@ -1,22 +1,27 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src')
-    }
-  },
-  server: {
-    host: '0.0.0.0',
-    port: 5174,
-    open: true
-  },
   build: {
-    outDir: 'dist',
-    sourcemap: true
-  }
+    lib: {
+      entry: path.resolve(__dirname, 'src/index.ts'),
+      name: 'playhead',
+      fileName: (format) => `index.${format}.js`,
+    },
+    rollupOptions: {
+      // 외부 라이브러리로 처리할 패키지들
+      external: ['react', 'react-dom'],
+      output: {
+        // 전역 변수로 외부 라이브러리 제공
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+        },
+      },
+    },
+  },
 });
+

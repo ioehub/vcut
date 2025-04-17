@@ -45,7 +45,7 @@ function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 
 // 플레이어 컨텍스트 제공자 컴포넌트
-export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PreviewPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(playerReducer, initialState);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -58,7 +58,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 export const usePlayer = (): PlayerContextType => {
   const context = useContext(PlayerContext);
   if (context === undefined) {
-    throw new Error('usePlayer must be used within a PlayerProvider');
+    throw new Error('usePlayer must be used within a PreviewPlayerProvider');
   }
   return context;
 };

@@ -12,7 +12,7 @@ export const PlayheadControls: React.FC<PlayheadControlsProps> = ({
   duration,
   isPlaying,
   playbackRate,
-  onTimeChange,
+  _onTimeChange, // 현재 사용되지 않음
   onPlayPause,
   onPlaybackRateChange,
   onFrameStep,
