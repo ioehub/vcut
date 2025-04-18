@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { MediaItem, MediaType } from '../types';
 import { formatFileSize, formatDuration, formatDate } from '../utils/formatters';
 
@@ -23,6 +23,25 @@ export const MediaPreview: React.FC<MediaPreviewProps> = ({
   const [newTag, setNewTag] = useState('');
   const [isTagInputFocused, setIsTagInputFocused] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const tagInputRef = useRef<HTMLInputElement>(null);
+  
+  // 미디어 로드 시 이벤트 핸들러
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    const audioElement = audioRef.current;
+    
+    return () => {
+      // 컴포넌트 언마운트 시 정리
+      if (videoElement) {
+        videoElement.pause();
+      }
+      
+      if (audioElement) {
+        audioElement.pause();
+      }
+    };
+  }, [item.id]);
   
   // 즐겨찾기 토글
   const handleFavoriteToggle = async () => {
@@ -36,6 +55,9 @@ export const MediaPreview: React.FC<MediaPreviewProps> = ({
     
     await onTagAdd(item.id, newTag.trim());
     setNewTag('');
+    
+    // 태그 추가 후 포커스 유지
+    tagInputRef.current?.focus();
   };
   
   // 태그 삭제
@@ -43,28 +65,74 @@ export const MediaPreview: React.FC<MediaPreviewProps> = ({
     await onTagRemove(item.id, tag);
   };
   
+  // 타임라인에 드래그 시작
+  const handleDragStart = (e: React.DragEvent) => {
+    // 드래그 데이터 설정
+    e.dataTransfer.setData('application/json', JSON.stringify({
+      id: item.id,
+      type: item.type,
+      name: item.name,
+      duration: item.metadata.duration
+    }));
+    
+    // 드래그 이미지 설정 (썸네일이 있는 경우)
+    if (item.thumbnail) {
+      const img = new Image();
+      img.src = item.thumbnail;
+      e.dataTransfer.setDragImage(img, 0, 0);
+    }
+    
+    e.dataTransfer.effectAllowed = 'copy';
+  };
+  
   // 미디어 미리보기 렌더링
   const renderMediaPreview = () => {
     switch (item.type) {
       case MediaType.VIDEO:
         return (
-          <video
-            ref={videoRef}
-            src={item.url}
-            controls
-            style={{
-              width: '100%',
-              height: 'auto',
-              maxHeight: '250px',
-              backgroundColor: '#000',
-              objectFit: 'contain',
-            }}
-          />
+          <div className="video-container" style={{ position: 'relative' }}>
+            <video
+              ref={videoRef}
+              src={item.url}
+              controls
+              style={{
+                width: '100%',
+                height: 'auto',
+                maxHeight: '250px',
+                backgroundColor: '#000',
+                objectFit: 'contain',
+              }}
+            />
+            <div 
+              className="drag-overlay"
+              draggable
+              onDragStart={handleDragStart}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                color: 'transparent',
+                cursor: 'grab',
+                zIndex: 1,
+                opacity: 0,
+                transition: 'all 0.2s ease',
+              }}
+            >
+              타임라인에 드래그
+            </div>
+          </div>
         );
       case MediaType.AUDIO:
         return (
-          <div style={{ padding: '20px', textAlign: 'center' }}>
+          <div style={{ padding: '20px', textAlign: 'center', position: 'relative' }}>
             <audio
+              ref={audioRef}
               src={item.url}
               controls
               style={{ width: '100%' }}
@@ -75,23 +143,56 @@ export const MediaPreview: React.FC<MediaPreviewProps> = ({
                 fontSize: '48px',
                 color: '#aaa',
               }}
+              draggable
+              onDragStart={handleDragStart}
             >
               🎵
+            </div>
+            <div 
+              className="drag-hint"
+              style={{
+                marginTop: '8px',
+                fontSize: '12px',
+                color: '#888',
+              }}
+            >
+              타임라인에 드래그하여 추가
             </div>
           </div>
         );
       case MediaType.IMAGE:
         return (
-          <img
-            src={item.url}
-            alt={item.name}
-            style={{
-              width: '100%',
-              height: 'auto',
-              maxHeight: '250px',
-              objectFit: 'contain',
-            }}
-          />
+          <div style={{ position: 'relative' }}>
+            <img
+              src={item.url}
+              alt={item.name}
+              style={{
+                width: '100%',
+                height: 'auto',
+                maxHeight: '250px',
+                objectFit: 'contain',
+              }}
+              draggable
+              onDragStart={handleDragStart}
+            />
+            <div 
+              className="drag-hint"
+              style={{
+                position: 'absolute',
+                bottom: '8px',
+                right: '8px',
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                color: 'white',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                opacity: 0,
+                transition: 'opacity 0.2s ease',
+              }}
+            >
+              드래그하여 타임라인에 추가
+            </div>
+          </div>
         );
       default:
         return (
@@ -309,12 +410,7 @@ export const MediaPreview: React.FC<MediaPreviewProps> = ({
                   오디오 채널
                 </td>
                 <td style={{ padding: '4px 0' }}>
-                  {item.metadata.channels} (
-                  {item.metadata.channels === 1 ? '모노' :
-                   item.metadata.channels === 2 ? '스테레오' :
-                   item.metadata.channels === 6 ? '5.1' :
-                   item.metadata.channels === 8 ? '7.1' : `${item.metadata.channels}채널`}
-                  )
+                  {item.metadata.channels}채널
                 </td>
               </tr>
             )}
@@ -331,12 +427,12 @@ export const MediaPreview: React.FC<MediaPreviewProps> = ({
                   샘플 레이트
                 </td>
                 <td style={{ padding: '4px 0' }}>
-                  {(item.metadata.sampleRate / 1000).toFixed(1)} kHz
+                  {item.metadata.sampleRate} Hz
                 </td>
               </tr>
             )}
             
-            {/* 임포트 날짜 */}
+            {/* 생성일 */}
             <tr>
               <td
                 style={{
@@ -344,7 +440,22 @@ export const MediaPreview: React.FC<MediaPreviewProps> = ({
                   color: '#aaa',
                 }}
               >
-                임포트 날짜
+                생성일
+              </td>
+              <td style={{ padding: '4px 0' }}>
+                {formatDate(item.createdAt)}
+              </td>
+            </tr>
+            
+            {/* 가져온 날짜 */}
+            <tr>
+              <td
+                style={{
+                  padding: '4px 8px 4px 0',
+                  color: '#aaa',
+                }}
+              >
+                가져온 날짜
               </td>
               <td style={{ padding: '4px 0' }}>
                 {formatDate(item.importedAt)}
@@ -358,16 +469,13 @@ export const MediaPreview: React.FC<MediaPreviewProps> = ({
           className="tags-section"
           style={{
             marginTop: '16px',
-            borderTop: '1px solid #333',
-            paddingTop: '16px',
           }}
         >
           <h4
             style={{
-              margin: '0 0 12px 0',
+              margin: '0 0 8px 0',
               fontSize: '14px',
-              fontWeight: 'bold',
-              color: '#aaa',
+              color: '#ccc',
             }}
           >
             태그
@@ -379,43 +487,52 @@ export const MediaPreview: React.FC<MediaPreviewProps> = ({
             style={{
               display: 'flex',
               flexWrap: 'wrap',
-              gap: '6px',
+              gap: '8px',
               marginBottom: '12px',
             }}
           >
             {item.tags.length === 0 ? (
-              <span style={{ color: '#777', fontSize: '14px' }}>태그 없음</span>
+              <div
+                style={{
+                  color: '#777',
+                  fontSize: '13px',
+                  fontStyle: 'italic',
+                }}
+              >
+                태그 없음
+              </div>
             ) : (
               item.tags.map((tag, index) => (
-                <span
+                <div
                   key={index}
+                  className="tag"
                   style={{
                     backgroundColor: '#454545',
                     color: '#fff',
                     padding: '4px 8px',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    display: 'inline-flex',
+                    borderRadius: '16px',
+                    fontSize: '13px',
+                    display: 'flex',
                     alignItems: 'center',
                   }}
                 >
-                  {tag}
+                  <span>{tag}</span>
                   <button
                     onClick={() => handleRemoveTag(tag)}
+                    title={`태그 삭제: ${tag}`}
                     style={{
                       background: 'none',
                       border: 'none',
                       color: '#aaa',
-                      marginLeft: '4px',
                       fontSize: '12px',
                       cursor: 'pointer',
-                      padding: '0',
+                      marginLeft: '4px',
+                      padding: '0 2px',
                     }}
-                    title="태그 삭제"
                   >
                     ✕
                   </button>
-                </span>
+                </div>
               ))
             )}
           </div>
@@ -423,13 +540,14 @@ export const MediaPreview: React.FC<MediaPreviewProps> = ({
           {/* 태그 추가 폼 */}
           <form onSubmit={handleAddTag}>
             <div
-              className="tag-input-container"
+              className={`tag-input-container ${isTagInputFocused ? 'focused' : ''}`}
               style={{
-                position: 'relative',
                 display: 'flex',
+                position: 'relative',
               }}
             >
               <input
+                ref={tagInputRef}
                 type="text"
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
@@ -443,31 +561,69 @@ export const MediaPreview: React.FC<MediaPreviewProps> = ({
                   border: isTagInputFocused ? '1px solid #2196f3' : '1px solid #444',
                   borderRadius: '4px',
                   color: '#fff',
-                  fontSize: '14px',
+                  fontSize: '13px',
                   outline: 'none',
+                  transition: 'border-color 0.2s ease',
                 }}
               />
               <button
                 type="submit"
-                disabled={newTag.trim() === ''}
+                disabled={!newTag.trim()}
                 style={{
                   padding: '6px 12px',
-                  marginLeft: '8px',
-                  backgroundColor: newTag.trim() === '' ? '#444' : '#2196f3',
+                  backgroundColor: newTag.trim() ? '#2196f3' : '#444',
                   border: 'none',
-                  borderRadius: '4px',
+                  borderRadius: '0 4px 4px 0',
                   color: '#fff',
-                  fontSize: '14px',
-                  cursor: newTag.trim() === '' ? 'default' : 'pointer',
-                  opacity: newTag.trim() === '' ? 0.7 : 1,
+                  fontSize: '13px',
+                  cursor: newTag.trim() ? 'pointer' : 'default',
+                  position: 'absolute',
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
                 }}
               >
                 추가
               </button>
             </div>
           </form>
+          
+          {/* 타임라인 드래그 힌트 */}
+          <div
+            className="timeline-hint"
+            style={{
+              marginTop: '16px',
+              padding: '8px 12px',
+              backgroundColor: 'rgba(33, 150, 243, 0.1)',
+              borderRadius: '4px',
+              fontSize: '13px',
+              color: '#2196f3',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              cursor: 'grab',
+            }}
+            draggable
+            onDragStart={handleDragStart}
+          >
+            <span style={{ fontSize: '16px' }}>↗️</span>
+            <span>이 미디어를 타임라인으로 드래그하여 추가하세요</span>
+          </div>
         </div>
       </div>
+      
+      {/* CSS 스타일 */}
+      <style>
+        {`
+        .video-container:hover .drag-overlay {
+          opacity: 1;
+        }
+        
+        .preview-content:hover .drag-hint {
+          opacity: 1;
+        }
+        `}
+      </style>
     </div>
   );
 };

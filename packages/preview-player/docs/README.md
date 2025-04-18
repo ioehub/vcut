@@ -31,6 +31,7 @@ preview-player/
 │   ├── PlayerControls.tsx       # 플레이어 컨트롤 컴포넌트
 │   └── PlayerControls.css       # 컨트롤 스타일
 ├── package.json         # 패키지 정보 및 의존성
+├── vite.config.ts       # Vite 빌드 설정 (2025-04-19 추가)
 └── tsconfig.json        # TypeScript 설정
 ```
 
@@ -282,6 +283,74 @@ function VideoWithCustomControls() {
   );
 }
 ```
+
+## 빌드 설정 (2025-04-19 업데이트)
+
+preview-player 패키지는 이제 Vite를 사용하여 빌드됩니다. 빌드 설정은 다음과 같습니다:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    lib: {
+      entry: resolve(__dirname, 'src/index.ts'),
+      name: 'VCutPreviewPlayer',
+      fileName: (format) => `index.${format}.js`
+    },
+    rollupOptions: {
+      external: ['react', 'react-dom'],
+      output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM'
+        }
+      }
+    }
+  }
+});
+```
+
+### 주요 빌드 특성
+- **출력 형식**: ES 모듈 및 UMD
+- **출력 파일명**: `index.es.js` 및 `index.umd.js`
+- **TypeScript 선언 파일**: `index.d.ts`
+
+### 패키지 정보 업데이트
+package.json 파일도 Vite 빌드 시스템에 맞게 업데이트되었습니다:
+
+```json
+{
+  "main": "dist/index.umd.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite"
+  }
+}
+```
+
+## 패키지 통합
+preview-player 패키지는 vCut 프로젝트의 모노레포 구조에 통합되어 있으며, 다음과 같이 메인 앱에서 import됩니다:
+```tsx
+import { PreviewPlayerProvider } from '@vcut/preview-player';
+```
+
+## 최근 업데이트 (2025-04-19)
+- **빌드 시스템 변경**: TypeScript 컴파일러(tsc)에서 Vite로 빌드 시스템 변경
+- **파일명 형식 표준화**: `index.{format}.js` 형식의 파일명 사용으로 모노레포 표준화
+- **모듈 import 경로 최적화**: ES 모듈 및 UMD 형식 모두 지원
+- **의존성 업데이트**: Vite 및 관련 플러그인 추가
+
+## 호환성 참고 사항
+- 이 패키지는 React 17 이상과 호환됩니다.
+- 모던 브라우저(Chrome, Firefox, Safari, Edge)에서 테스트되었습니다.
+- IE11은 지원되지 않습니다.
 
 ## 스타일링
 

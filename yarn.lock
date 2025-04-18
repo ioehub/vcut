@@ -356,12 +356,12 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.57.1.tgz"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
-"@ffmpeg/core@^0.12.4":
+"@ffmpeg/core@^0.12.10":
   version "0.12.10"
   resolved "https://registry.npmjs.org/@ffmpeg/core/-/core-0.12.10.tgz"
   integrity sha512-dzNplnn2Nxle2c2i2rrDhqcB19q9cglCkWnoMTDN9Q9l3PvdjZWd1HfSPjCNWc/p8Q3CT+Es9fWOR0UhAeYQZA==
 
-"@ffmpeg/ffmpeg@^0.12.7":
+"@ffmpeg/ffmpeg@^0.12.15":
   version "0.12.15"
   resolved "https://registry.npmjs.org/@ffmpeg/ffmpeg/-/ffmpeg-0.12.15.tgz"
   integrity sha512-1C8Obr4GsN3xw+/1Ww6PFM84wSQAGsdoTuTWPOj2OizsRDLT4CXTaVjPhkw6ARyDus1B9X/L2LiXHqYYsGnRFw==
@@ -1795,8 +1795,8 @@
   version "0.0.1"
   resolved "file:packages/media"
   dependencies:
-    "@ffmpeg/core" "^0.12.4"
-    "@ffmpeg/ffmpeg" "^0.12.7"
+    "@ffmpeg/core" "^0.12.10"
+    "@ffmpeg/ffmpeg" "^0.12.15"
     "@ffmpeg/util" "^0.12.1"
     react "^18.2.0"
     react-dom "^18.2.0"
@@ -1820,6 +1820,8 @@
   version "0.1.0"
   resolved "file:packages/rendering"
   dependencies:
+    "@vcut/ffmpeg-service" "^0.1.0"
+    "@vcut/media" "^0.0.1"
     react "^18.2.0"
     react-dom "^18.2.0"
 

@@ -15,7 +15,7 @@ interface MediaManagerProps {
  * 
  * 미디어 파일의 임포트, 관리, 필터링, 미리보기 기능을 제공합니다.
  */
-export const MediaManager: React.FC<MediaManagerProps> = ({
+const MediaManager: React.FC<MediaManagerProps> = ({
   onSelect,
   onDragStart
 }) => {
@@ -122,8 +122,16 @@ export const MediaManager: React.FC<MediaManagerProps> = ({
   
   // 컴포넌트 마운트 시 미디어 항목 로드
   useEffect(() => {
-    refreshMedia();
-  }, [refreshMedia]);
+    const loadMedia = async () => {
+      try {
+        await refreshMedia();
+      } catch (error) {
+        console.error('미디어 로드 실패:', error);
+      }
+    };
+    
+    loadMedia();
+  }, []); 
   
   return (
     <div
@@ -262,7 +270,7 @@ export const MediaManager: React.FC<MediaManagerProps> = ({
         ref={fileInputRef}
         onChange={handleFileChange}
         multiple
-        accept="video/*,audio/*,image/*"
+        accept="audio/mp3,.mp3"
         style={{ display: 'none' }}
       />
     </div>

@@ -144,7 +144,57 @@ const handleTouchStart = (e: React.TouchEvent) => {
 };
 ```
 
-## 5. 사용 방법
+## 5. 빌드 설정 (2025-04-19 업데이트)
+
+타임라인 패키지는 Vite를 사용하여 빌드됩니다. 빌드 설정은 다음과 같습니다:
+
+```typescript
+// vite.config.ts
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      name: 'Timeline',
+      formats: ['es', 'umd'],
+      fileName: (format) => `index.${format}.js`
+    },
+    rollupOptions: {
+      external: ['react', 'react-dom'],
+      output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM'
+        }
+      }
+    }
+  }
+})
+```
+
+### 주요 빌드 특성
+- **출력 형식**: ES 모듈 및 UMD
+- **출력 파일명**: `index.es.js` 및 `index.umd.js`
+- **TypeScript 선언 파일**: `index.d.ts`
+
+### 패키지 통합
+타임라인 패키지는 vCut 프로젝트의 모노레포 구조에 통합되어 있으며, 다음과 같이 메인 앱에서 import됩니다:
+```tsx
+import { Timeline } from '@vcut/timeline';
+```
+
+### 의존성
+- React 17 이상
+- React DOM 17 이상
+- TypeScript 4.5 이상
+- Vite 4.0 이상
+
+## 6. 최근 업데이트 (2025-04-19)
+- 빌드 시스템 개선: 파일명 형식을 `timeline.{format}.js`에서 `index.{format}.js`로 변경하여 모노레포 표준화
+- 모듈 import 경로 최적화
+- TypeScript 타입 선언 개선
+
+## 7. 사용 방법
 
 ### 기본 사용법
 ```tsx
@@ -220,7 +270,7 @@ function ZoomableTimeline() {
 }
 ```
 
-## 6. 스타일링
+## 8. 스타일링
 
 타임라인 모듈은 CSS를 사용하여 스타일링되며, 주요 스타일 파일은 다음과 같습니다:
 
@@ -233,7 +283,7 @@ function ZoomableTimeline() {
 - `.timeline-clip`: 미디어 클립
 - `.controls`: 타임라인 컨트롤 버튼 영역
 
-## 7. 향후 개발 계획
+## 9. 향후 개발 계획
 
 ### 추가 예정 기능
 - **Playhead 구현**: 재생 위치를 표시하는 Playhead 기능
@@ -242,14 +292,14 @@ function ZoomableTimeline() {
 - **부드러운 스크롤**: 타임라인 스크롤 성능 최적화
 - **다양한 트랙 유형**: 이펙트, 오버레이 등 추가 트랙 유형 지원
 
-## 8. 기술 스택
+## 10. 기술 스택
 
 - **React**: UI 컴포넌트 구현
 - **TypeScript**: 타입 안전성 확보
 - **CSS**: 스타일링 및 반응형 디자인
 - **Electron**: 데스크톱 애플리케이션 프레임워크
 
-## 9. 참고 자료
+## 11. 참고 자료
 
 - [React 공식 문서](https://reactjs.org/docs/getting-started.html)
 - [TypeScript 공식 문서](https://www.typescriptlang.org/docs/)

@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { MediaFilterOptions, MediaType } from '../types';
+import { useMedia } from '../context/MediaContext';
 
 interface MediaToolbarProps {
   selectedCount: number;
@@ -23,8 +24,20 @@ export const MediaToolbar: React.FC<MediaToolbarProps> = ({
   onDeleteSelected,
   onRefresh
 }) => {
+  const { state } = useMedia();
   const [searchValue, setSearchValue] = useState(filter.search || '');
+  const [showFilters, setShowFilters] = useState(false);
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // 모든 미디어 항목에서 사용 가능한 태그 추출
+  useEffect(() => {
+    const tags = new Set<string>();
+    state.items.forEach(item => {
+      item.tags.forEach(tag => tags.add(tag));
+    });
+    setAvailableTags(Array.from(tags).sort());
+  }, [state.items]);
   
   // 검색어 변경 핸들러
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +72,20 @@ export const MediaToolbar: React.FC<MediaToolbarProps> = ({
   const handleFavoriteFilterChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     onFilterChange({ ...filter, favorite: checked ? true : undefined });
+  }, [filter, onFilterChange]);
+  
+  // 태그 필터 변경 핸들러
+  const handleTagFilterChange = useCallback((tag: string, checked: boolean) => {
+    const currentTags = filter.tags || [];
+    let newTags: string[];
+    
+    if (checked) {
+      newTags = [...currentTags, tag];
+    } else {
+      newTags = currentTags.filter(t => t !== tag);
+    }
+    
+    onFilterChange({ ...filter, tags: newTags.length > 0 ? newTags : undefined });
   }, [filter, onFilterChange]);
   
   // 정렬 옵션 변경 핸들러
@@ -150,6 +177,27 @@ export const MediaToolbar: React.FC<MediaToolbarProps> = ({
             >
               🔍
             </span>
+            {searchValue && (
+              <button
+                onClick={() => {
+                  setSearchValue('');
+                  onFilterChange({ ...filter, search: undefined });
+                }}
+                style={{
+                  position: 'absolute',
+                  right: '8px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: '#aaa',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                }}
+              >
+                ✕
+              </button>
+            )}
           </div>
           
           {/* 정렬 옵션 */}
@@ -175,6 +223,28 @@ export const MediaToolbar: React.FC<MediaToolbarProps> = ({
             <option value="duration-desc">길이 (긴 순)</option>
             <option value="duration-asc">길이 (짧은 순)</option>
           </select>
+          
+          {/* 필터 토글 버튼 */}
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            title={showFilters ? "필터 숨기기" : "필터 표시"}
+            style={{
+              padding: '7px 10px',
+              backgroundColor: (filter.type?.length || filter.tags?.length || filter.favorite) ? '#2196f3' : '#333',
+              border: 'none',
+              borderRadius: '4px',
+              color: '#fff',
+              fontSize: '14px',
+              cursor: 'pointer',
+            }}
+          >
+            {showFilters ? "▲" : "▼"} 필터
+            {(filter.type?.length || filter.tags?.length || filter.favorite) && 
+              <span style={{ marginLeft: '5px', fontSize: '12px', backgroundColor: '#fff', color: '#333', borderRadius: '50%', padding: '0 5px' }}>
+                {(filter.type?.length || 0) + (filter.tags?.length || 0) + (filter.favorite ? 1 : 0)}
+              </span>
+            }
+          </button>
           
           {/* 필터 초기화 버튼 */}
           <button
@@ -268,61 +338,115 @@ export const MediaToolbar: React.FC<MediaToolbarProps> = ({
       </div>
       
       {/* 필터 옵션 영역 */}
-      <div
-        className="media-toolbar-filters"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '16px',
-          fontSize: '14px',
-          color: '#ccc',
-        }}
-      >
-        {/* 미디어 타입 필터 */}
-        <div className="filter-group">
-          <span style={{ marginRight: '8px' }}>타입:</span>
-          <label style={{ marginRight: '12px' }}>
-            <input
-              type="checkbox"
-              checked={filter.type?.includes(MediaType.VIDEO) || false}
-              onChange={(e) => handleTypeFilterChange(MediaType.VIDEO, e.target.checked)}
-              style={{ marginRight: '4px' }}
-            />
-            비디오
-          </label>
-          <label style={{ marginRight: '12px' }}>
-            <input
-              type="checkbox"
-              checked={filter.type?.includes(MediaType.AUDIO) || false}
-              onChange={(e) => handleTypeFilterChange(MediaType.AUDIO, e.target.checked)}
-              style={{ marginRight: '4px' }}
-            />
-            오디오
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={filter.type?.includes(MediaType.IMAGE) || false}
-              onChange={(e) => handleTypeFilterChange(MediaType.IMAGE, e.target.checked)}
-              style={{ marginRight: '4px' }}
-            />
-            이미지
-          </label>
+      {showFilters && (
+        <div
+          className="media-toolbar-filters"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            fontSize: '14px',
+            color: '#ccc',
+            backgroundColor: '#2a2a2a',
+            padding: '12px',
+            borderRadius: '4px',
+          }}
+        >
+          {/* 미디어 타입 필터 */}
+          <div className="filter-group">
+            <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>미디어 타입</div>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <input
+                  type="checkbox"
+                  checked={filter.type?.includes(MediaType.VIDEO) || false}
+                  onChange={(e) => handleTypeFilterChange(MediaType.VIDEO, e.target.checked)}
+                />
+                비디오
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <input
+                  type="checkbox"
+                  checked={filter.type?.includes(MediaType.AUDIO) || false}
+                  onChange={(e) => handleTypeFilterChange(MediaType.AUDIO, e.target.checked)}
+                />
+                오디오
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <input
+                  type="checkbox"
+                  checked={filter.type?.includes(MediaType.IMAGE) || false}
+                  onChange={(e) => handleTypeFilterChange(MediaType.IMAGE, e.target.checked)}
+                />
+                이미지
+              </label>
+            </div>
+          </div>
+          
+          {/* 즐겨찾기 필터 */}
+          <div className="filter-group">
+            <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <input
+                type="checkbox"
+                checked={filter.favorite || false}
+                onChange={handleFavoriteFilterChange}
+              />
+              즐겨찾기만 표시
+            </label>
+          </div>
+          
+          {/* 태그 필터 */}
+          {availableTags.length > 0 && (
+            <div className="filter-group">
+              <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>태그</div>
+              <div style={{ 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                gap: '8px', 
+                maxHeight: '100px', 
+                overflowY: 'auto',
+                padding: '4px'
+              }}>
+                {availableTags.map(tag => (
+                  <label
+                    key={tag}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      backgroundColor: filter.tags?.includes(tag) ? '#2196f3' : '#454545',
+                      color: filter.tags?.includes(tag) ? '#fff' : '#ddd',
+                      padding: '4px 8px',
+                      borderRadius: '16px',
+                      fontSize: '12px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={filter.tags?.includes(tag) || false}
+                      onChange={(e) => handleTagFilterChange(tag, e.target.checked)}
+                      style={{ display: 'none' }}
+                    />
+                    {tag}
+                    {filter.tags?.includes(tag) && (
+                      <span
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleTagFilterChange(tag, false);
+                        }}
+                        style={{ marginLeft: '2px', fontSize: '10px' }}
+                      >
+                        ✕
+                      </span>
+                    )}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-        
-        {/* 즐겨찾기 필터 */}
-        <div className="filter-group">
-          <label>
-            <input
-              type="checkbox"
-              checked={filter.favorite || false}
-              onChange={handleFavoriteFilterChange}
-              style={{ marginRight: '4px' }}
-            />
-            즐겨찾기만 표시
-          </label>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

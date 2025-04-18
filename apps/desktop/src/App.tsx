@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { EditorPage, EditorPageProvider } from '@vcut/editor-page';
 import { MediaProvider } from '@vcut/media';
-// PlayheadProvider 임포트 제거
+import { PlayheadPlayheadProvider } from '@vcut/playhead';
 import * as AudioEditor from '@vcut/audio-editor';
-// PreviewPlayerProvider 임포트 제거
+import { PreviewPlayerProvider } from '@vcut/preview-player';
+import { Timeline } from '@vcut/timeline';
+import { EffectsProvider } from '@vcut/effects';
+import { RenderingEngine, RenderSettings } from '@vcut/rendering';
 import AppHeader from './components/AppHeader';
 import Sidebar from './components/Sidebar';
 import './styles/App.css';
@@ -14,17 +17,9 @@ console.log('EditorPage:', typeof EditorPage);
 console.log('EditorPageProvider:', typeof EditorPageProvider);
 console.log('MediaProvider:', typeof MediaProvider);
 console.log('AudioEditor 전체 모듈:', AudioEditor);
-// PreviewPlayerProvider 로그 제거
-
-// 임시 PlayheadProvider 컴포넌트
-const TempPlayheadProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  return <>{children}</>;
-};
-
-// 임시 PreviewPlayerProvider 컴포넌트
-const TempPreviewPlayerProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  return <>{children}</>;
-};
+console.log('Timeline:', typeof Timeline);
+console.log('EffectsProvider:', typeof EffectsProvider);
+console.log('RenderingEngine:', typeof RenderingEngine);
 
 // 더미 서비스 객체 생성 (실제 서비스 대신 사용)
 const dummyMcpFactory = {
@@ -74,6 +69,35 @@ const App: React.FC = () => {
   const [appliedTransitions, setAppliedTransitions] = useState<Array<{type: string, params: any}>>([]);
   const [textElements, setTextElements] = useState<Array<any>>([]);
   const [audioFiles, setAudioFiles] = useState<File[]>([]);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [renderSettings, setRenderSettings] = useState({
+    format: 'mp4',
+    resolution: { width: 1920, height: 1080 },
+    frameRate: 30,
+    quality: 'high',
+    useHardwareAcceleration: true
+  });
+  
+  // 타임라인 트랙 상태
+  const [tracks, setTracks] = useState([
+    {
+      id: 'video-track-1',
+      name: '비디오 트랙 1',
+      type: 'video',
+      clips: [
+        { id: 'clip-1', name: 'video1.mp4', startTime: 0, duration: 15, type: 'video' },
+        { id: 'clip-2', name: 'video2.mp4', startTime: 15, duration: 15, type: 'video' }
+      ]
+    },
+    {
+      id: 'audio-track-1',
+      name: '오디오 트랙 1',
+      type: 'audio',
+      clips: [
+        { id: 'audio-clip-1', name: 'audio1.mp3', startTime: 5, duration: 15, type: 'audio' }
+      ]
+    }
+  ]);
   
   // 서비스 초기화 시뮬레이션
   useEffect(() => {
@@ -173,7 +197,9 @@ const App: React.FC = () => {
       effects: appliedEffects,
       transitions: appliedTransitions,
       textElements,
-      audioFiles: audioFiles.map(file => file.name)
+      audioFiles: audioFiles.map(file => file.name),
+      tracks,
+      renderSettings
     };
     
     // 저장 시뮬레이션
@@ -211,6 +237,47 @@ const App: React.FC = () => {
     }, 1000);
   };
   
+  // 렌더링 설정 변경 핸들러
+  const handleRenderSettingsChange = (newSettings: any) => {
+    setRenderSettings({ ...renderSettings, ...newSettings });
+  };
+  
+  // 클립 이동 핸들러
+  const handleClipMove = (clipId: string, trackId: string, newStartTime: number) => {
+    const updatedTracks = tracks.map(track => {
+      if (track.id === trackId) {
+        return {
+          ...track,
+          clips: track.clips.map(clip => 
+            clip.id === clipId ? { ...clip, startTime: newStartTime } : clip
+          )
+        };
+      }
+      return track;
+    });
+    
+    setTracks(updatedTracks);
+  };
+  
+  // 트랙 추가 핸들러
+  const handleTrackAdd = () => {
+    const newTrackId = `track-${tracks.length + 1}`;
+    const newTrack = {
+      id: newTrackId,
+      name: `트랙 ${tracks.length + 1}`,
+      type: 'video',
+      clips: []
+    };
+    
+    setTracks([...tracks, newTrack]);
+  };
+  
+  // 트랙 제거 핸들러
+  const handleTrackRemove = (trackId: string) => {
+    const updatedTracks = tracks.filter(track => track.id !== trackId);
+    setTracks(updatedTracks);
+  };
+  
   // 로딩 화면
   if (isLoading) {
     return (
@@ -233,6 +300,7 @@ const App: React.FC = () => {
       />
       
       <div className="app-container">
+        {/* 미디어 브라우저 (상단 왼쪽) */}
         {sidebarOpen && (
           <div className="app-sidebar">
             <Sidebar 
@@ -246,28 +314,61 @@ const App: React.FC = () => {
         )}
         
         <div className="app-content">
+          {/* 모든 Provider 컴포넌트 통합 */}
           <MediaProvider>
-            <TempPlayheadProvider>
+            <PlayheadPlayheadProvider>
               <AudioEditor.Provider>
-                <TempPreviewPlayerProvider>
-                  <EditorPageProvider
-                    mcpFactory={dummyMcpFactory as any}
-                    ffmpegService={dummyFFmpegService as any}
-                  >
-                    <EditorPage 
-                      projectId="new-project"
-                      initialData={{
-                        name: '새 프로젝트',
-                        resolution: { width: 1920, height: 1080 },
-                        frameRate: 30
-                      }}
-                      onSave={handleSaveProject}
-                      onExport={handleExportProject}
-                    />
-                  </EditorPageProvider>
-                </TempPreviewPlayerProvider>
+                <PreviewPlayerProvider>
+                  <EffectsProvider>
+                    <EditorPageProvider
+                      mcpFactory={dummyMcpFactory as any}
+                      ffmpegService={dummyFFmpegService as any}
+                    >
+                      {/* 레이아웃 구성 */}
+                      <div className="editor-layout">
+                        {/* 미리보기 플레이어 (상단 중앙) */}
+                        <div className="preview-player-container">
+                          <h3>Playhead 컨트롤 패널 (상단)</h3>
+                          <div className="playhead-controls">
+                            {/* 여기에 Playhead 컨트롤 추가 */}
+                            <button className="playhead-button">⏮</button>
+                            <button className="playhead-button play-pause">▶</button>
+                            <button className="playhead-button">⏭</button>
+                            <span className="time-display">00:00:00</span>
+                          </div>
+                          
+                          {/* 렌더링 설정 */}
+                          <div className="render-settings-container">
+                            <RenderSettings 
+                              settings={renderSettings}
+                              onChange={handleRenderSettingsChange}
+                            />
+                          </div>
+                        </div>
+                        
+                        {/* 타임라인 (하단) */}
+                        <div className="timeline-container">
+                          <h3>Timeline 위치 (하단)</h3>
+                          <Timeline 
+                            tracks={tracks}
+                            scale={20} // 픽셀 단위 스케일 (1초당 20픽셀)
+                            currentTime={currentTime}
+                            onClipMove={handleClipMove}
+                            onTrackAdd={handleTrackAdd}
+                            onTrackRemove={handleTrackRemove}
+                          />
+                        </div>
+                        
+                        {/* 효과 패널 */}
+                        <div className="effects-panel" style={{ display: 'none' }}>
+                          {/* 효과 패널은 필요할 때 표시 */}
+                        </div>
+                      </div>
+                    </EditorPageProvider>
+                  </EffectsProvider>
+                </PreviewPlayerProvider>
               </AudioEditor.Provider>
-            </TempPlayheadProvider>
+            </PlayheadPlayheadProvider>
           </MediaProvider>
         </div>
       </div>

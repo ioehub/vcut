@@ -10,6 +10,9 @@ import {
   MediaMetadata
 } from '../types';
 
+// 로컬 스토리지 키
+const STORAGE_KEY = 'vcut_media_items';
+
 /**
  * 미디어 서비스 구현
  * 
@@ -18,6 +21,45 @@ import {
 export class MediaService implements IMediaService {
   private items: Map<string, MediaItem> = new Map();
   
+  constructor() {
+    this.loadFromStorage();
+  }
+  
+  /**
+   * 로컬 스토리지에서 미디어 항목을 로드합니다
+   */
+  private loadFromStorage(): void {
+    try {
+      const storedItems = localStorage.getItem(STORAGE_KEY);
+      if (storedItems) {
+        const parsedItems = JSON.parse(storedItems);
+        
+        // 날짜 문자열을 Date 객체로 변환
+        parsedItems.forEach((item: any) => {
+          item.createdAt = new Date(item.createdAt);
+          item.importedAt = new Date(item.importedAt);
+          this.items.set(item.id, item);
+        });
+        
+        console.log(`${this.items.size}개의 미디어 항목을 로컬 스토리지에서 로드했습니다.`);
+      }
+    } catch (error) {
+      console.error('로컬 스토리지에서 미디어 항목을 로드하는 중 오류 발생:', error);
+    }
+  }
+  
+  /**
+   * 미디어 항목을 로컬 스토리지에 저장합니다
+   */
+  private saveToStorage(): void {
+    try {
+      const itemsArray = Array.from(this.items.values());
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(itemsArray));
+    } catch (error) {
+      console.error('미디어 항목을 로컬 스토리지에 저장하는 중 오류 발생:', error);
+    }
+  }
+  
   /**
    * 미디어 파일을 임포트합니다
    * @param files 파일 목록
@@ -25,16 +67,18 @@ export class MediaService implements IMediaService {
    */
   async importMedia(files: File[]): Promise<MediaItem[]> {
     const importedItems: MediaItem[] = [];
-    
+    console.log(`파일 임포트 시작: ${files.length}개`);
     for (const file of files) {
       try {
+        console.log(`파일 임포트: ${file.name}`);
         // 미디어 타입 감지
         const type = this.detectMediaType(file);
-        
+        console.log(`감지된 미디어 타입: ${type}`);
         // 메타데이터 추출
         const metadata = await FFmpegService.extractMetadata(file);
-        
+        //console.log()
         // 미디어 항목 생성
+        console.log('미디어 항목 생성 시작');
         const item = await this.createMediaItem({
           name: file.name,
           type,
@@ -42,11 +86,12 @@ export class MediaService implements IMediaService {
           size: file.size,
           metadata
         });
-        
+        console.log('미디어 항목 생성 완료');
         // 썸네일 생성
         const thumbnail = await FFmpegService.generateThumbnail(file, type);
         item.thumbnail = thumbnail;
         
+        console.log('썸네일 생성 완료')
         // 목록에 추가
         this.items.set(item.id, item);
         importedItems.push(item);
@@ -54,6 +99,11 @@ export class MediaService implements IMediaService {
         console.error(`파일 임포트 실패: ${file.name}`, error);
       }
     }
+
+    console.log('파일 임포트 완료');
+    
+    // 로컬 스토리지에 저장
+    this.saveToStorage();
     
     return importedItems;
   }
@@ -144,6 +194,9 @@ export class MediaService implements IMediaService {
     const updatedItem = { ...item, ...updates };
     this.items.set(id, updatedItem);
     
+    // 로컬 스토리지에 저장
+    this.saveToStorage();
+    
     return updatedItem;
   }
   
@@ -162,7 +215,12 @@ export class MediaService implements IMediaService {
       }
     }
     
-    return this.items.delete(id);
+    const result = this.items.delete(id);
+    
+    // 로컬 스토리지에 저장
+    this.saveToStorage();
+    
+    return result;
   }
   
   /**
@@ -189,6 +247,9 @@ export class MediaService implements IMediaService {
       // 미디어 항목 업데이트
       mediaItem.thumbnail = thumbnail;
       this.items.set(mediaItem.id, mediaItem);
+      
+      // 로컬 스토리지에 저장
+      this.saveToStorage();
       
       return thumbnail;
     } catch (error) {

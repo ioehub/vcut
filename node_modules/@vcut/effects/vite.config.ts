@@ -9,7 +9,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'VCutEffects',
-      fileName: 'vcut-effects'
+      fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
       // React는 외부 의존성으로 처리

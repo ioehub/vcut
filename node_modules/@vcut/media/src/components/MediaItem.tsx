@@ -1,5 +1,5 @@
-import React from 'react';
-import { MediaItem as MediaItemType, MediaType } from '../types';
+import React, { useState } from 'react';
+import { MediaItem as MediaItemType, MediaType, MediaDragData } from '../types';
 import { formatDuration, formatFileSize } from '../utils/formatters';
 
 interface MediaItemProps {
@@ -22,6 +22,8 @@ export const MediaItem: React.FC<MediaItemProps> = ({
   onContextMenu,
   onDragStart
 }) => {
+  const [isDragging, setIsDragging] = useState(false);
+
   // 미디어 타입에 따른 아이콘
   const getTypeIcon = (type: MediaType) => {
     switch (type) {
@@ -36,18 +38,39 @@ export const MediaItem: React.FC<MediaItemProps> = ({
     }
   };
 
+  // 미디어 타입에 따른 배경색
+  const getTypeBackground = (type: MediaType) => {
+    switch (type) {
+      case MediaType.VIDEO:
+        return '#3949ab'; // 비디오용 파란색
+      case MediaType.AUDIO:
+        return '#3498db'; // 오디오용 하늘색
+      case MediaType.IMAGE:
+        return '#43a047'; // 이미지용 녹색
+      default:
+        return '#333';
+    }
+  };
+
   // 미디어 아이템 드래그 시작 핸들러
   const handleDragStart = (e: React.DragEvent) => {
+    setIsDragging(true);
+    
+    // 드래그 데이터 생성
+    const dragData: MediaDragData = {
+      id: item.id,
+      type: item.type,
+      name: item.name,
+      duration: item.metadata.duration
+    };
+    
+    // 드래그 데이터 설정
+    e.dataTransfer.setData('application/json', JSON.stringify(dragData));
+    e.dataTransfer.effectAllowed = 'copy';
+    
+    // 커스텀 드래그 핸들러가 있으면 호출
     if (onDragStart) {
       onDragStart(e, item);
-    } else {
-      // 기본 드래그 데이터 설정
-      e.dataTransfer.setData('application/json', JSON.stringify({
-        id: item.id,
-        type: item.type,
-        name: item.name,
-        duration: item.metadata.duration
-      }));
     }
     
     // 드래그 이미지 설정 (썸네일이 있는 경우)
@@ -57,15 +80,21 @@ export const MediaItem: React.FC<MediaItemProps> = ({
       e.dataTransfer.setDragImage(img, 0, 0);
     }
   };
+  
+  // 드래그 종료 핸들러
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
 
   return (
     <div
-      className={`media-item ${isSelected ? 'selected' : ''}`}
+      className={`media-item ${isSelected ? 'selected' : ''} ${isDragging ? 'dragging' : ''}`}
       onClick={() => onSelect(item.id)}
       onDoubleClick={() => onDoubleClick && onDoubleClick(item)}
       onContextMenu={(e) => onContextMenu && onContextMenu(e, item)}
       draggable
       onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
       data-media-id={item.id}
       data-media-type={item.type}
       style={{
@@ -79,6 +108,7 @@ export const MediaItem: React.FC<MediaItemProps> = ({
         boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
         cursor: 'pointer',
         transition: 'all 0.2s ease',
+        opacity: isDragging ? 0.6 : 1,
       }}
     >
       {/* 썸네일 */}
@@ -88,7 +118,7 @@ export const MediaItem: React.FC<MediaItemProps> = ({
           position: 'relative',
           width: '100%',
           height: '120px',
-          backgroundColor: '#333',
+          backgroundColor: item.thumbnail ? '#333' : getTypeBackground(item.type),
           backgroundImage: item.thumbnail ? `url(${item.thumbnail})` : 'none',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -115,7 +145,7 @@ export const MediaItem: React.FC<MediaItemProps> = ({
             fontSize: '12px',
           }}
         >
-          {item.type}
+          {item.type === MediaType.AUDIO ? 'MP3' : item.type}
         </div>
         
         {/* 즐겨찾기 아이콘 */}
@@ -152,6 +182,28 @@ export const MediaItem: React.FC<MediaItemProps> = ({
             {formatDuration(item.metadata.duration)}
           </div>
         )}
+        
+        {/* 드래그 힌트 */}
+        <div
+          className="drag-hint"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(33, 150, 243, 0.2)',
+            display: isSelected ? 'flex' : 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontSize: '12px',
+            opacity: 0,
+            transition: 'opacity 0.2s ease',
+          }}
+        >
+          타임라인에 드래그
+        </div>
       </div>
       
       {/* 정보 영역 */}
@@ -234,6 +286,19 @@ export const MediaItem: React.FC<MediaItemProps> = ({
           </div>
         )}
       </div>
+      
+      {/* CSS 스타일 */}
+      <style>
+        {`
+        .media-item:hover .drag-hint {
+          opacity: 1;
+        }
+        
+        .media-item.dragging {
+          transform: scale(0.95);
+        }
+        `}
+      </style>
     </div>
   );
 };

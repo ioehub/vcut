@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
+import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,26 +9,36 @@ export default defineConfig({
     headers: {
       // FFmpeg WebAssembly 작업을 위한 CORS 헤더 설정
       'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Embedder-Policy': 'require-corp'
+      'Cross-Origin-Embedder-Policy': 'credentialless'
     }
   },
   build: {
     lib: {
-      // 라이브러리 진입점 설정
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'VCutMedia',
-      fileName: 'vcut-media'
+      name: 'VcutMedia',
+      fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
-      // React는 외부 의존성으로 처리
       external: ['react', 'react-dom'],
       output: {
-        // 외부 라이브러리에 대한 전역 변수 설정
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM'
         }
       }
     }
+  },
+  worker: {
+    format: 'es',
+    plugins: [],
+    rollupOptions: {
+      output: {
+        // worker 파일에도 CORS 헤더 적용
+        inlineDynamicImports: true
+      }
+    }
+  },
+  optimizeDeps: {
+    exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util']
   }
 });

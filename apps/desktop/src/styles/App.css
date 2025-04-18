@@ -1,78 +1,108 @@
+/* 앱 전체 스타일 */
 .vcut-app {
   display: flex;
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-  background-color: #1e1e1e; /* CapCut 스타일 어두운 배경 */
-  color: #f1f1f1;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
 }
 
+/* 앱 헤더 스타일 */
+.app-header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #2d2d2d;
+  border-bottom: 1px solid #3d3d3d;
+  height: 3rem;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  margin-left: 1rem;
+}
+
+.app-header-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 앱 컨테이너 스타일 */
 .app-container {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
+/* 사이드바 스타일 */
 .app-sidebar {
-  width: 280px;
-  background-color: #252525; /* CapCut 스타일 사이드바 배경 */
-  border-right: 1px solid #3a3a3a;
-  overflow: hidden;
-  transition: width 0.3s ease;
+  width: 220px;
+  background-color: #252525;
+  border-right: 1px solid #3d3d3d;
+  overflow-y: auto;
 }
 
+/* 콘텐츠 영역 스타일 */
 .app-content {
   flex: 1;
   overflow: hidden;
-  background-color: #1e1e1e; /* CapCut 스타일 콘텐츠 배경 */
   display: flex;
   flex-direction: column;
 }
 
-/* 로딩 화면 스타일 */
-.loading-screen, .error-screen {
+/* 에디터 레이아웃 */
+.editor-layout {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  background-color: #1e1e1e; /* CapCut 스타일 배경 */
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 미리보기 플레이어 컨테이너 */
+.preview-player-container {
+  padding: 1rem;
+  background-color: #2a2a2a;
+  border-bottom: 1px solid #3d3d3d;
+  min-height: 300px;
+}
+
+/* 타임라인 컨테이너 */
+.timeline-container {
+  flex: 1;
+  padding: 1rem;
+  background-color: #252525;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+/* 로딩 화면 스타일 */
+.loading-screen {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
-.loading-content, .error-content {
+.loading-content {
   text-align: center;
-  padding: 2rem;
-  border-radius: 8px;
-  background-color: #252525; /* CapCut 스타일 콘텐츠 배경 */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  color: #f1f1f1;
-  width: 400px;
-  max-width: 90%;
-}
-
-.loading-content h2, .error-content h2 {
-  margin-bottom: 1rem;
-  color: #4285f4;
-  font-size: 1.8rem;
-}
-
-.loading-content p, .error-content p {
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  color: #cccccc;
+  color: #fff;
 }
 
 .loading-spinner {
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 5px solid #fff;
   width: 50px;
   height: 50px;
-  margin: 0 auto 1.5rem;
-  border: 5px solid #333333;
-  border-top: 5px solid #4285f4; /* CapCut 스타일 강조색 */
-  border-radius: 50%;
+  margin: 0 auto 20px;
   animation: spin 1s linear infinite;
 }
 
@@ -81,45 +111,165 @@
   100% { transform: rotate(360deg); }
 }
 
-.error-content button {
-  margin-top: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #4285f4; /* CapCut 스타일 버튼 색상 */
+/* 버튼 스타일 */
+button {
+  background-color: #0078d4;
   color: white;
+  border: none;
+  padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s;
-  border: none;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.error-content button:hover {
-  background-color: #5c9aff;
-}
-
-/* 프로젝트 이름 입력 필드 스타일 */
-.project-name-input {
-  background-color: #333333;
-  color: white;
-  border: 1px solid #444444;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
   font-size: 0.9rem;
-  outline: none;
-  transition: border-color 0.2s;
 }
 
-.project-name-input:focus {
-  border-color: #4285f4;
+button:hover {
+  background-color: #106ebe;
 }
 
-/* 드래그 가능한 아이템 스타일 */
-[draggable] {
-  cursor: grab;
+button:active {
+  background-color: #005a9e;
+}
+
+button.secondary {
+  background-color: #3a3a3a;
+}
+
+button.secondary:hover {
+  background-color: #4a4a4a;
+}
+
+button.secondary:active {
+  background-color: #2a2a2a;
+}
+
+/* 미디어 브라우저 스타일 */
+.media-browser {
+  padding: 1rem;
+}
+
+.media-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  background-color: #333;
+  cursor: pointer;
+}
+
+.media-item:hover {
+  background-color: #444;
+}
+
+.media-item-thumbnail {
+  width: 40px;
+  height: 40px;
+  background-color: #555;
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #aaa;
+}
+
+.media-item-info {
+  flex: 1;
+}
+
+.media-item-name {
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.media-item-duration {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+/* 플레이헤드 컨트롤 스타일 */
+.playhead-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.playhead-button {
+  background-color: #333;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.playhead-button:hover {
+  background-color: #444;
+}
+
+.playhead-button.play-pause {
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+}
+
+.time-display {
+  font-family: monospace;
+  font-size: 1rem;
+  color: #ddd;
+  margin: 0 0.5rem;
+}
+
+/* 타임라인 스타일 추가 */
+.timeline {
+  background-color: #2a2a2a;
+  border-radius: 4px;
+  border: 1px solid #3d3d3d;
+  overflow: hidden;
+}
+
+/* 트랙 스타일 */
+.track {
+  height: 60px;
+  background-color: #333;
+  border-bottom: 1px solid #444;
+  position: relative;
+}
+
+/* 클립 스타일 */
+.clip {
+  position: absolute;
+  height: 50px;
+  top: 5px;
+  background-color: #0078d4;
+  border-radius: 4px;
+  color: white;
+  padding: 0.25rem;
+  font-size: 0.8rem;
+  overflow: hidden;
+  cursor: pointer;
   user-select: none;
 }
 
-[draggable]:active {
-  cursor: grabbing;
+.clip.video {
+  background-color: #0078d4;
+}
+
+.clip.audio {
+  background-color: #107c10;
+}
+
+.clip.text {
+  background-color: #d83b01;
+}
+
+.clip:hover {
+  opacity: 0.9;
 }

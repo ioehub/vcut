@@ -9,7 +9,7 @@ export default defineConfig({
       entry: 'src/index.ts',
       name: 'Timeline',
       formats: ['es', 'umd'],
-      fileName: (format) => `timeline.${format}.js`
+      fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
       external: ['react', 'react-dom'],

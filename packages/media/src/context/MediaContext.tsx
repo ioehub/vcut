@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, ReactNode, useCallback } from 'react';
 import { MediaContextState, MediaContextAction, MediaItem, MediaFilterOptions } from '../types';
 import MediaService from '../services/MediaService';
 
@@ -84,7 +84,7 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [state, dispatch] = useReducer(mediaReducer, initialState);
 
   // 미디어 파일 임포트
-  const importMedia = async (files: File[]): Promise<MediaItem[]> => {
+  const importMedia = useCallback(async (files: File[]): Promise<MediaItem[]> => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       dispatch({ type: 'SET_ERROR', payload: null });
@@ -99,10 +99,10 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
-  };
+  }, []);
 
   // 미디어 목록 새로고침
-  const refreshMedia = async (filter?: MediaFilterOptions): Promise<void> => {
+  const refreshMedia = useCallback(async (filter?: MediaFilterOptions): Promise<void> => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       dispatch({ type: 'SET_ERROR', payload: null });
@@ -119,10 +119,10 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
-  };
+  }, [state.filter]);
 
   // 미디어 항목 업데이트
-  const updateMedia = async (id: string, updates: Partial<MediaItem>): Promise<MediaItem> => {
+  const updateMedia = useCallback(async (id: string, updates: Partial<MediaItem>): Promise<MediaItem> => {
     try {
       dispatch({ type: 'SET_ERROR', payload: null });
       
@@ -134,10 +134,10 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       dispatch({ type: 'SET_ERROR', payload: error as Error });
       throw error;
     }
-  };
+  }, []);
 
   // 미디어 항목 삭제
-  const deleteMedia = async (id: string): Promise<boolean> => {
+  const deleteMedia = useCallback(async (id: string): Promise<boolean> => {
     try {
       dispatch({ type: 'SET_ERROR', payload: null });
       
@@ -151,38 +151,37 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       dispatch({ type: 'SET_ERROR', payload: error as Error });
       return false;
     }
-  };
+  }, []);
 
   // 항목 선택
-  const selectItem = (id: string): void => {
+  const selectItem = useCallback((id: string): void => {
     if (!state.selectedItems.includes(id)) {
       dispatch({ type: 'SELECT_ITEM', payload: id });
     }
-  };
+  }, [state.selectedItems]);
 
   // 항목 선택 해제
-  const deselectItem = (id: string): void => {
+  const deselectItem = useCallback((id: string): void => {
     dispatch({ type: 'DESELECT_ITEM', payload: id });
-  };
+  }, []);
 
-  // 전체 선택
-  const selectAll = (): void => {
+  // 모든 항목 선택
+  const selectAll = useCallback((): void => {
     dispatch({ type: 'SELECT_ALL' });
-  };
+  }, []);
 
-  // 전체 선택 해제
-  const deselectAll = (): void => {
+  // 모든 항목 선택 해제
+  const deselectAll = useCallback((): void => {
     dispatch({ type: 'DESELECT_ALL' });
-  };
+  }, []);
 
   // 필터 설정
-  const setFilter = (filter: MediaFilterOptions): void => {
+  const setFilter = useCallback((filter: MediaFilterOptions): void => {
     dispatch({ type: 'SET_FILTER', payload: filter });
-    refreshMedia(filter);
-  };
+  }, []);
 
   // 컨텍스트 값
-  const value: MediaContextValue = {
+  const value = {
     state,
     importMedia,
     refreshMedia,
@@ -205,7 +204,7 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 // 커스텀 훅
 export const useMedia = (): MediaContextValue => {
   const context = useContext(MediaContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useMedia must be used within a MediaProvider');
   }
   return context;
