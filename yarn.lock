@@ -1220,7 +1220,7 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
-"@testing-library/dom@^10.0.0":
+"@testing-library/dom@^10.0.0", "@testing-library/dom@>=7.21.4":
   version "10.4.0"
   resolved "https://registry.npmjs.org/@testing-library/dom/-/dom-10.4.0.tgz"
   integrity sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ==
@@ -1276,6 +1276,11 @@
   integrity sha512-kFSyxiEDwv1WLl2fgsq6pPBbw5aWKrsY2/noi1Id0TK0UParSF62oFQFGHXIyaG4pp2tEub/Zlel+fjjZILDsw==
   dependencies:
     "@babel/runtime" "^7.12.5"
+
+"@testing-library/user-event@^14.5.2":
+  version "14.6.1"
+  resolved "https://registry.npmjs.org/@testing-library/user-event/-/user-event-14.6.1.tgz"
+  integrity sha512-vq7fv0rnt+QTXgPxr5Hjc210p6YKq2kmdziLgnsZGgLJ9e6VAShx1pACLuRjd/AS/sr7phAR58OIIpf0LlmQNw==
 
 "@tootallnate/once@2":
   version "2.0.0"
@@ -1718,7 +1723,7 @@
     react "^18.2.0"
     react-dom "^18.2.0"
 
-"@vcut/audio-editor@^0.1.0", "@vcut/audio-editor@file:C:\\vang\\project\\2025\\vcut\\packages\\audio-editor":
+"@vcut/audio-editor@*", "@vcut/audio-editor@^0.1.0", "@vcut/audio-editor@file:C:\\vang\\project\\2025\\vcut\\packages\\audio-editor":
   version "0.1.0"
   resolved "file:packages/audio-editor"
   dependencies:
@@ -1745,7 +1750,7 @@
     react "^18.2.0"
     react-dom "^18.2.0"
 
-"@vcut/editor-page@^0.1.0", "@vcut/editor-page@file:C:\\vang\\project\\2025\\vcut\\packages\\editor-page":
+"@vcut/editor-page@*", "@vcut/editor-page@^0.1.0", "@vcut/editor-page@file:C:\\vang\\project\\2025\\vcut\\packages\\editor-page":
   version "0.1.0"
   resolved "file:packages/editor-page"
   dependencies:
@@ -1761,13 +1766,23 @@
     react-dom "^18.2.0"
     uuid "^9.0.0"
 
-"@vcut/ffmpeg-service@^0.1.0", "@vcut/ffmpeg-service@file:C:\\vang\\project\\2025\\vcut\\packages\\ffmpeg-service":
+"@vcut/ffmpeg-service@*", "@vcut/ffmpeg-service@^0.1.0", "@vcut/ffmpeg-service@file:C:\\vang\\project\\2025\\vcut\\packages\\ffmpeg-service":
   version "0.1.0"
   resolved "file:packages/ffmpeg-service"
   dependencies:
     fluent-ffmpeg "^2.1.2"
     node-fetch "^2.6.7"
     uuid "^9.0.0"
+
+"@vcut/integration-tests@file:C:\\vang\\project\\2025\\vcut\\packages\\integration-tests":
+  version "0.1.0"
+  resolved "file:packages/integration-tests"
+  dependencies:
+    "@vcut/audio-editor" "*"
+    "@vcut/editor-page" "*"
+    "@vcut/ffmpeg-service" "*"
+    "@vcut/playhead" "*"
+    "@vcut/preview-player" "*"
 
 "@vcut/mcp-service@^0.1.0", "@vcut/mcp-service@file:C:\\vang\\project\\2025\\vcut\\packages\\mcp-service":
   version "0.1.0"
@@ -1776,7 +1791,7 @@
     eventemitter3 "^5.0.1"
     uuid "^9.0.0"
 
-"@vcut/media@file:C:\\vang\\project\\2025\\vcut\\packages\\media":
+"@vcut/media@^0.0.1", "@vcut/media@file:C:\\vang\\project\\2025\\vcut\\packages\\media":
   version "0.0.1"
   resolved "file:packages/media"
   dependencies:
@@ -1787,14 +1802,14 @@
     react-dom "^18.2.0"
     uuid "^9.0.1"
 
-"@vcut/playhead@^0.1.0", "@vcut/playhead@file:C:\\vang\\project\\2025\\vcut\\packages\\playhead":
+"@vcut/playhead@*", "@vcut/playhead@^0.1.0", "@vcut/playhead@file:C:\\vang\\project\\2025\\vcut\\packages\\playhead":
   version "0.1.0"
   resolved "file:packages/playhead"
   dependencies:
     react "^18.2.0"
     react-dom "^18.2.0"
 
-"@vcut/preview-player@^0.1.0", "@vcut/preview-player@file:C:\\vang\\project\\2025\\vcut\\packages\\preview-player":
+"@vcut/preview-player@*", "@vcut/preview-player@^0.1.0", "@vcut/preview-player@file:C:\\vang\\project\\2025\\vcut\\packages\\preview-player":
   version "0.1.0"
   resolved "file:packages/preview-player"
   dependencies:
@@ -7010,6 +7025,11 @@ react-dom@^18.0.0, "react-dom@^18.0.0 || ^19.0.0", react-dom@^18.2.0:
   dependencies:
     loose-envify "^1.1.0"
     scheduler "^0.23.2"
+
+react-error-overlay@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.npmjs.org/react-error-overlay/-/react-error-overlay-6.1.0.tgz"
+  integrity sha512-SN/U6Ytxf1QGkw/9ve5Y+NxBbZM6Ht95tuXNMKs8EJyFa/Vy/+Co3stop3KBHARfn/giv+Lj1uUnTfOJ3moFEQ==
 
 react-is@^17.0.1:
   version "17.0.2"

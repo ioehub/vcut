@@ -10,7 +10,7 @@ export { default as TestAudioEditor } from './pages/TestAudioEditor';
 
 // 컨텍스트 및 훅 내보내기
 export { 
-  AudioEditorProvider, 
+  AudioEditorProvider as Provider, 
   useAudioEditor 
 } from './context/AudioEditorContext';
 
@@ -19,3 +19,9 @@ export { default as AudioService } from './services/AudioService';
 
 // 타입 내보내기
 export * from './types';
+
+// UMD 호환성을 위한 기본 내보내기
+import { AudioEditorProvider } from './context/AudioEditorContext';
+export default {
+  Provider: AudioEditorProvider
+};

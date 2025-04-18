@@ -1,12 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { EditorPage, EditorPageProvider } from '@vcut/editor-page';
 import { MediaProvider } from '@vcut/media';
-import { PlayheadProvider } from '@vcut/playhead';
-import { AudioEditorProvider } from '@vcut/audio-editor';
-import { PreviewPlayerProvider } from '@vcut/preview-player';
+// PlayheadProvider 임포트 제거
+import * as AudioEditor from '@vcut/audio-editor';
+// PreviewPlayerProvider 임포트 제거
 import AppHeader from './components/AppHeader';
 import Sidebar from './components/Sidebar';
 import './styles/App.css';
+
+// 패키지 로딩 상태 확인
+console.log('패키지 로딩 상태 확인:');
+console.log('EditorPage:', typeof EditorPage);
+console.log('EditorPageProvider:', typeof EditorPageProvider);
+console.log('MediaProvider:', typeof MediaProvider);
+console.log('AudioEditor 전체 모듈:', AudioEditor);
+// PreviewPlayerProvider 로그 제거
+
+// 임시 PlayheadProvider 컴포넌트
+const TempPlayheadProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
+  return <>{children}</>;
+};
+
+// 임시 PreviewPlayerProvider 컴포넌트
+const TempPreviewPlayerProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
+  return <>{children}</>;
+};
 
 // 더미 서비스 객체 생성 (실제 서비스 대신 사용)
 const dummyMcpFactory = {
@@ -229,9 +247,9 @@ const App: React.FC = () => {
         
         <div className="app-content">
           <MediaProvider>
-            <PlayheadProvider>
-              <AudioEditorProvider>
-                <PreviewPlayerProvider>
+            <TempPlayheadProvider>
+              <AudioEditor.Provider>
+                <TempPreviewPlayerProvider>
                   <EditorPageProvider
                     mcpFactory={dummyMcpFactory as any}
                     ffmpegService={dummyFFmpegService as any}
@@ -247,9 +265,9 @@ const App: React.FC = () => {
                       onExport={handleExportProject}
                     />
                   </EditorPageProvider>
-                </PreviewPlayerProvider>
-              </AudioEditorProvider>
-            </PlayheadProvider>
+                </TempPreviewPlayerProvider>
+              </AudioEditor.Provider>
+            </TempPlayheadProvider>
           </MediaProvider>
         </div>
       </div>

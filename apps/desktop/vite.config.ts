@@ -12,13 +12,16 @@ export default defineConfig({
       '@vcut/mcp-service': path.resolve(__dirname, '../../packages/mcp-service/dist/index.js'),
       '@vcut/ffmpeg-service': path.resolve(__dirname, '../../packages/ffmpeg-service/dist/index.js'),
       '@vcut/preview-player': path.resolve(__dirname, '../../packages/preview-player/dist/index.js'),
-      '@vcut/playhead': path.resolve(__dirname, '../../packages/playhead/dist/index.umd.js'),
-      '@vcut/audio-editor': path.resolve(__dirname, '../../packages/audio-editor/dist/index.umd.js')
+      '@vcut/playhead': path.resolve(__dirname, '../../packages/playhead/dist/index.es.js'),
+      '@vcut/audio-editor': path.resolve(__dirname, '../../packages/audio-editor/dist/index.es.js')
     },
   },
   server: {
     port: 5176,
     open: true,
+    hmr: {
+      overlay: true // HMR 오류 오버레이 활성화
+    }
   },
   optimizeDeps: {
     include: ['react', 'react-dom'],

@@ -1,8 +1,8 @@
-var wt = Object.defineProperty;
-var kt = (n, e, t) => e in n ? wt(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
-var G = (n, e, t) => (kt(n, typeof e != "symbol" ? e + "" : e, t), t);
-import He, { createContext as Rt, useReducer as St, useRef as ge, useEffect as Qe, useCallback as P, useContext as At, useState as Ne } from "react";
-var _e = { exports: {} }, ne = {};
+var kt = Object.defineProperty;
+var Rt = (n, e, t) => e in n ? kt(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
+var G = (n, e, t) => (Rt(n, typeof e != "symbol" ? e + "" : e, t), t);
+import He, { createContext as St, useReducer as At, useRef as ge, useEffect as Qe, useCallback as _, useContext as Nt, useState as Ne } from "react";
+var Pe = { exports: {} }, ne = {};
 /**
  * @license React
  * react-jsx-runtime.production.min.js
@@ -13,7 +13,7 @@ var _e = { exports: {} }, ne = {};
  * LICENSE file in the root directory of this source tree.
  */
 var Ge;
-function Nt() {
+function Pt() {
   if (Ge)
     return ne;
   Ge = 1;
@@ -132,13 +132,13 @@ function _t() {
         }
       return null;
     }
-    var h = Object.assign, _ = 0, L, q, Z, D, ee, W, te;
+    var h = Object.assign, P = 0, L, q, Z, D, ee, W, te;
     function le() {
     }
     le.__reactDisabledLog = !0;
     function ce() {
       {
-        if (_ === 0) {
+        if (P === 0) {
           L = console.log, q = console.info, Z = console.warn, D = console.error, ee = console.group, W = console.groupCollapsed, te = console.groupEnd;
           var r = {
             configurable: !0,
@@ -156,12 +156,12 @@ function _t() {
             groupEnd: r
           });
         }
-        _++;
+        P++;
       }
     }
     function be() {
       {
-        if (_--, _ === 0) {
+        if (P--, P === 0) {
           var r = {
             configurable: !0,
             enumerable: !0,
@@ -191,7 +191,7 @@ function _t() {
             })
           });
         }
-        _ < 0 && C("disabledDepth fell below zero. This is a bug in React. Please file an issue.");
+        P < 0 && C("disabledDepth fell below zero. This is a bug in React. Please file an issue.");
       }
     }
     var Y = v.ReactCurrentDispatcher, Ee;
@@ -210,10 +210,10 @@ function _t() {
     }
     var Ce = !1, ue;
     {
-      var Ze = typeof WeakMap == "function" ? WeakMap : Map;
-      ue = new Ze();
+      var et = typeof WeakMap == "function" ? WeakMap : Map;
+      ue = new et();
     }
-    function Pe(r, l) {
+    function _e(r, l) {
       if (!r || Ce)
         return "";
       {
@@ -284,10 +284,10 @@ function _t() {
       var X = r ? r.displayName || r.name : "", K = X ? de(X) : "";
       return typeof r == "function" && ue.set(r, K), K;
     }
-    function et(r, l, c) {
-      return Pe(r, !1);
+    function tt(r, l, c) {
+      return _e(r, !1);
     }
-    function tt(r) {
+    function rt(r) {
       var l = r.prototype;
       return !!(l && l.isReactComponent);
     }
@@ -295,7 +295,7 @@ function _t() {
       if (r == null)
         return "";
       if (typeof r == "function")
-        return Pe(r, tt(r));
+        return _e(r, rt(r));
       if (typeof r == "string")
         return de(r);
       switch (r) {
@@ -307,7 +307,7 @@ function _t() {
       if (typeof r == "object")
         switch (r.$$typeof) {
           case y:
-            return et(r.render);
+            return tt(r.render);
           case R:
             return fe(r.type, l, c);
           case N: {
@@ -328,7 +328,7 @@ function _t() {
       } else
         $e.setExtraStackFrame(null);
     }
-    function rt(r, l, c, b, k) {
+    function ot(r, l, c, b, k) {
       {
         var A = Function.call.bind(re);
         for (var T in r)
@@ -347,17 +347,17 @@ function _t() {
           }
       }
     }
-    var ot = Array.isArray;
+    var nt = Array.isArray;
     function Te(r) {
-      return ot(r);
+      return nt(r);
     }
-    function nt(r) {
+    function at(r) {
       {
         var l = typeof Symbol == "function" && Symbol.toStringTag, c = l && r[Symbol.toStringTag] || r.constructor.name || "Object";
         return c;
       }
     }
-    function at(r) {
+    function st(r) {
       try {
         return Oe(r), !1;
       } catch {
@@ -368,17 +368,17 @@ function _t() {
       return "" + r;
     }
     function Ve(r) {
-      if (at(r))
-        return C("The provided key is an unsupported type %s. This value must be coerced to a string before before using it here.", nt(r)), Oe(r);
+      if (st(r))
+        return C("The provided key is an unsupported type %s. This value must be coerced to a string before before using it here.", at(r)), Oe(r);
     }
-    var oe = v.ReactCurrentOwner, st = {
+    var oe = v.ReactCurrentOwner, it = {
       key: !0,
       ref: !0,
       __self: !0,
       __source: !0
     }, Fe, De, we;
     we = {};
-    function it(r) {
+    function lt(r) {
       if (re.call(r, "ref")) {
         var l = Object.getOwnPropertyDescriptor(r, "ref").get;
         if (l && l.isReactWarning)
@@ -386,7 +386,7 @@ function _t() {
       }
       return r.ref !== void 0;
     }
-    function lt(r) {
+    function ct(r) {
       if (re.call(r, "key")) {
         var l = Object.getOwnPropertyDescriptor(r, "key").get;
         if (l && l.isReactWarning)
@@ -394,13 +394,13 @@ function _t() {
       }
       return r.key !== void 0;
     }
-    function ct(r, l) {
+    function dt(r, l) {
       if (typeof r.ref == "string" && oe.current && l && oe.current.stateNode !== l) {
         var c = f(oe.current.type);
         we[c] || (C('Component "%s" contains the string ref "%s". Support for string refs will be removed in a future major release. This case cannot be automatically converted to an arrow function. We ask you to manually fix this case by using useRef() or createRef() instead. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-string-ref', f(oe.current.type), r.ref), we[c] = !0);
       }
     }
-    function dt(r, l) {
+    function ut(r, l) {
       {
         var c = function() {
           Fe || (Fe = !0, C("%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", l));
@@ -411,7 +411,7 @@ function _t() {
         });
       }
     }
-    function ut(r, l) {
+    function ft(r, l) {
       {
         var c = function() {
           De || (De = !0, C("%s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", l));
@@ -422,7 +422,7 @@ function _t() {
         });
       }
     }
-    var ft = function(r, l, c, b, k, A, T) {
+    var pt = function(r, l, c, b, k, A, T) {
       var E = {
         // This tag allows us to uniquely identify this as a React Element
         $$typeof: e,
@@ -451,12 +451,12 @@ function _t() {
         value: k
       }), Object.freeze && (Object.freeze(E.props), Object.freeze(E)), E;
     };
-    function pt(r, l, c, b, k) {
+    function ht(r, l, c, b, k) {
       {
         var A, T = {}, E = null, I = null;
-        c !== void 0 && (Ve(c), E = "" + c), lt(l) && (Ve(l.key), E = "" + l.key), it(l) && (I = l.ref, ct(l, k));
+        c !== void 0 && (Ve(c), E = "" + c), ct(l) && (Ve(l.key), E = "" + l.key), lt(l) && (I = l.ref, dt(l, k));
         for (A in l)
-          re.call(l, A) && !st.hasOwnProperty(A) && (T[A] = l[A]);
+          re.call(l, A) && !it.hasOwnProperty(A) && (T[A] = l[A]);
         if (r && r.defaultProps) {
           var j = r.defaultProps;
           for (A in j)
@@ -464,9 +464,9 @@ function _t() {
         }
         if (E || I) {
           var O = typeof r == "function" ? r.displayName || r.name || "Unknown" : r;
-          E && dt(T, O), I && ut(T, O);
+          E && ut(T, O), I && ft(T, O);
         }
-        return ft(r, E, I, k, b, oe.current, T);
+        return pt(r, E, I, k, b, oe.current, T);
       }
     }
     var ke = v.ReactCurrentOwner, Ie = v.ReactDebugCurrentFrame;
@@ -494,7 +494,7 @@ Check the render method of \`` + r + "`.";
         return "";
       }
     }
-    function ht(r) {
+    function gt(r) {
       {
         if (r !== void 0) {
           var l = r.fileName.replace(/^.*[\\\/]/, ""), c = r.lineNumber;
@@ -506,7 +506,7 @@ Check your code at ` + l + ":" + c + ".";
       }
     }
     var Be = {};
-    function gt(r) {
+    function mt(r) {
       {
         var l = Me();
         if (!l) {
@@ -523,7 +523,7 @@ Check the top-level render call using <` + c + ">.");
         if (!r._store || r._store.validated || r.key != null)
           return;
         r._store.validated = !0;
-        var c = gt(l);
+        var c = mt(l);
         if (Be[c])
           return;
         Be[c] = !0;
@@ -550,7 +550,7 @@ Check the top-level render call using <` + c + ">.");
         }
       }
     }
-    function mt(r) {
+    function xt(r) {
       {
         var l = r.type;
         if (l == null || typeof l == "string")
@@ -566,7 +566,7 @@ Check the top-level render call using <` + c + ">.");
           return;
         if (c) {
           var b = f(l);
-          rt(c, r.props, "prop", b, r);
+          ot(c, r.props, "prop", b, r);
         } else if (l.PropTypes !== void 0 && !Re) {
           Re = !0;
           var k = f(l);
@@ -575,7 +575,7 @@ Check the top-level render call using <` + c + ">.");
         typeof l.getDefaultProps == "function" && !l.getDefaultProps.isReactClassApproved && C("getDefaultProps is only used on classic React.createClass definitions. Use a static property named `defaultProps` instead.");
       }
     }
-    function xt(r) {
+    function yt(r) {
       {
         for (var l = Object.keys(r.props), c = 0; c < l.length; c++) {
           var b = l[c];
@@ -594,12 +594,12 @@ Check the top-level render call using <` + c + ">.");
         if (!T) {
           var E = "";
           (r === void 0 || typeof r == "object" && r !== null && Object.keys(r).length === 0) && (E += " You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.");
-          var I = ht(k);
+          var I = gt(k);
           I ? E += I : E += Me();
           var j;
           r === null ? j = "null" : Te(r) ? j = "array" : r !== void 0 && r.$$typeof === e ? (j = "<" + (f(r.type) || "Unknown") + " />", E = " Did you accidentally export a JSX literal instead of a component?") : j = typeof r, C("React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", j, E);
         }
-        var O = pt(r, l, c, k, A);
+        var O = ht(r, l, c, k, A);
         if (O == null)
           return O;
         if (T) {
@@ -616,65 +616,65 @@ Check the top-level render call using <` + c + ">.");
               Ue(U, r);
         }
         if (re.call(l, "key")) {
-          var K = f(r), M = Object.keys(l).filter(function(Tt) {
-            return Tt !== "key";
+          var K = f(r), M = Object.keys(l).filter(function(wt) {
+            return wt !== "key";
           }), Ae = M.length > 0 ? "{key: someKey, " + M.join(": ..., ") + ": ...}" : "{key: someKey}";
           if (!ze[K + Ae]) {
-            var Ct = M.length > 0 ? "{" + M.join(": ..., ") + ": ...}" : "{}";
+            var Tt = M.length > 0 ? "{" + M.join(": ..., ") + ": ...}" : "{}";
             C(`A props object containing a "key" prop is being spread into JSX:
   let props = %s;
   <%s {...props} />
 React keys must be passed directly to JSX without using spread:
   let props = %s;
-  <%s key={someKey} {...props} />`, Ae, K, Ct, K), ze[K + Ae] = !0;
+  <%s key={someKey} {...props} />`, Ae, K, Tt, K), ze[K + Ae] = !0;
           }
         }
-        return r === o ? xt(O) : mt(O), O;
+        return r === o ? yt(O) : xt(O), O;
       }
     }
-    function yt(r, l, c) {
+    function vt(r, l, c) {
       return We(r, l, c, !0);
     }
-    function vt(r, l, c) {
+    function bt(r, l, c) {
       return We(r, l, c, !1);
     }
-    var bt = vt, Et = yt;
-    ae.Fragment = o, ae.jsx = bt, ae.jsxs = Et;
+    var Et = bt, Ct = vt;
+    ae.Fragment = o, ae.jsx = Et, ae.jsxs = Ct;
   }()), ae;
 }
-process.env.NODE_ENV === "production" ? _e.exports = Nt() : _e.exports = _t();
-var s = _e.exports;
+process.env.NODE_ENV === "production" ? Pe.exports = Pt() : Pe.exports = _t();
+var s = Pe.exports;
 let he;
-const Pt = new Uint8Array(16);
-function jt() {
+const jt = new Uint8Array(16);
+function $t() {
   if (!he && (he = typeof crypto < "u" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto), !he))
     throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
-  return he(Pt);
+  return he(jt);
 }
 const V = [];
 for (let n = 0; n < 256; ++n)
   V.push((n + 256).toString(16).slice(1));
-function $t(n, e = 0) {
+function Ot(n, e = 0) {
   return V[n[e + 0]] + V[n[e + 1]] + V[n[e + 2]] + V[n[e + 3]] + "-" + V[n[e + 4]] + V[n[e + 5]] + "-" + V[n[e + 6]] + V[n[e + 7]] + "-" + V[n[e + 8]] + V[n[e + 9]] + "-" + V[n[e + 10]] + V[n[e + 11]] + V[n[e + 12]] + V[n[e + 13]] + V[n[e + 14]] + V[n[e + 15]];
 }
-const Ot = typeof crypto < "u" && crypto.randomUUID && crypto.randomUUID.bind(crypto), Ye = {
-  randomUUID: Ot
+const Vt = typeof crypto < "u" && crypto.randomUUID && crypto.randomUUID.bind(crypto), Ye = {
+  randomUUID: Vt
 };
 function Ke(n, e, t) {
   if (Ye.randomUUID && !e && !n)
     return Ye.randomUUID();
   n = n || {};
-  const o = n.random || (n.rng || jt)();
+  const o = n.random || (n.rng || $t)();
   if (o[6] = o[6] & 15 | 64, o[8] = o[8] & 63 | 128, e) {
     t = t || 0;
     for (let a = 0; a < 16; ++a)
       e[t + a] = o[a];
     return e;
   }
-  return $t(o);
+  return Ot(o);
 }
 var S = /* @__PURE__ */ ((n) => (n.GAIN = "gain", n.EQ = "eq", n.COMPRESSOR = "compressor", n.REVERB = "reverb", n.DELAY = "delay", n.NOISE_REDUCTION = "noiseReduction", n.FADE = "fade", n.LIMITER = "limiter", n.PITCH_SHIFT = "pitchShift", n.TIME_STRETCH = "timeStretch", n))(S || {});
-class Vt {
+class Ft {
   /**
    * AudioService 생성자
    */
@@ -1380,7 +1380,7 @@ const Je = {
   isRecording: !1,
   sampleRate: 44100,
   duration: 0
-}, Ft = (n, e) => {
+}, Dt = (n, e) => {
   switch (e.type) {
     case "ADD_TRACK":
       return {
@@ -1550,7 +1550,7 @@ const Je = {
     default:
       return n;
   }
-}, Xe = Rt({
+}, Xe = St({
   state: Je,
   dispatch: () => null,
   addTrack: async () => "",
@@ -1592,12 +1592,12 @@ const Je = {
   },
   loadAudioFile: async () => "",
   exportAudio: async () => new Blob()
-}), Dt = ({ children: n }) => {
-  const [e, t] = St(Ft, Je), o = ge(null), a = ge(null);
+}), Ze = ({ children: n }) => {
+  const [e, t] = At(Dt, Je), o = ge(null), a = ge(null);
   Qe(() => {
     console.log("AudioEditorContext: AudioService 초기화 시작...");
     try {
-      o.current && (console.log("기존 AudioService 인스턴스 정리..."), a.current && (clearInterval(a.current), a.current = null)), o.current = new Vt(), o.current.initialize();
+      o.current && (console.log("기존 AudioService 인스턴스 정리..."), a.current && (clearInterval(a.current), a.current = null)), o.current = new Ft(), o.current.initialize();
       const u = () => {
         o.current && o.current.audioContext.state === "suspended" && (console.log("사용자 상호작용 감지, AudioContext 재개 시도..."), o.current.audioContext.resume().then(() => {
           console.log("AudioContext 재개 성공");
@@ -1627,7 +1627,7 @@ const Je = {
       console.error("AudioService 초기화 중 오류 발생:", u);
     }
   }, []);
-  const i = P(() => o.current, []), d = P(async (u) => {
+  const i = _(() => o.current, []), d = _(async (u) => {
     const f = i();
     if (!f)
       return "";
@@ -1637,28 +1637,28 @@ const Je = {
     } catch (h) {
       return console.error("트랙 추가 중 오류:", h), "";
     }
-  }, [i]), m = P((u) => {
+  }, [i]), m = _((u) => {
     const f = i();
     f && (f.releaseTrack(u), t({ type: "REMOVE_TRACK", payload: u }));
-  }, [i]), y = P((u, f) => {
+  }, [i]), y = _((u, f) => {
     const h = i();
     h && (f.volume !== void 0 && h.setTrackVolume(u, f.volume), f.pan !== void 0 && h.setTrackPan(u, f.pan), f.audioBuffer && h.setTrackAudioBuffer(u, f.audioBuffer), t({
       type: "UPDATE_TRACK",
       payload: { id: u, updates: f }
     }));
-  }, [i]), p = P((u, f) => {
+  }, [i]), p = _((u, f) => {
     const h = i();
     h && (h.setTrackVolume(u, f), t({
       type: "SET_TRACK_VOLUME",
       payload: { id: u, volume: f }
     }));
-  }, [i]), x = P((u) => {
-    const f = e.tracks.find((_) => _.id === u);
+  }, [i]), x = _((u) => {
+    const f = e.tracks.find((P) => P.id === u);
     if (!f)
       return;
     const h = i();
     h && (h.setTrackVolume(u, f.muted ? f.volume : 0), t({ type: "TOGGLE_TRACK_MUTE", payload: u }));
-  }, [e.tracks, i]), R = P((u) => {
+  }, [e.tracks, i]), R = _((u) => {
     const f = i();
     f && (t({ type: "TOGGLE_TRACK_SOLO", payload: u }), setTimeout(() => {
       e.tracks.forEach((h) => {
@@ -1669,53 +1669,53 @@ const Je = {
         );
       });
     }, 0));
-  }, [e.tracks, i]), N = P((u) => {
+  }, [e.tracks, i]), N = _((u) => {
     const f = i();
     f && (f.setMasterVolume(u), t({ type: "SET_MASTER_VOLUME", payload: u }));
-  }, [i]), $ = P((u, f) => {
+  }, [i]), $ = _((u, f) => {
     const h = i();
     h && (h.applyEffect(u, f), t({
       type: "ADD_EFFECT",
       payload: { trackId: u, effect: f }
     }));
-  }, [i]), F = P((u, f) => {
+  }, [i]), F = _((u, f) => {
     t({
       type: "REMOVE_EFFECT",
       payload: { trackId: u, effectId: f }
     });
-  }, []), w = P((u, f, h) => {
+  }, []), w = _((u, f, h) => {
     t({
       type: "UPDATE_EFFECT",
       payload: { trackId: u, effectId: f, updates: h }
     });
-  }, []), g = P((u, f) => {
+  }, []), g = _((u, f) => {
     t({
       type: "ADD_MARKER",
       payload: { trackId: u, marker: f }
     });
-  }, []), v = P((u, f) => {
+  }, []), v = _((u, f) => {
     t({
       type: "REMOVE_MARKER",
       payload: { trackId: u, markerId: f }
     });
-  }, []), C = P((u, f, h) => {
+  }, []), C = _((u, f, h) => {
     t({
       type: "UPDATE_MARKER",
       payload: { trackId: u, markerId: f, updates: h }
     });
-  }, []), B = P(async (u, f) => {
+  }, []), B = _(async (u, f) => {
     const h = i();
     if (!h)
       return "";
     try {
       console.log(`파일 로드 시작: ${u}, 이름: ${f}`);
-      let _;
+      let P;
       if (u.match(/^([A-Za-z]:\\|\/)/))
         if (console.log("로컬 파일 경로가 감지되었습니다."), typeof window < "u" && window.electron) {
           console.log("Electron 환경 감지됨, 로컬 파일 로드 중...");
           try {
             const W = (await window.electron.fs.readFile(u)).buffer;
-            console.log(`파일 읽기 완료, 크기: ${W.byteLength} 바이트, 디코딩 시작...`), _ = await h.decodeAudioData(W);
+            console.log(`파일 읽기 완료, 크기: ${W.byteLength} 바이트, 디코딩 시작...`), P = await h.decodeAudioData(W);
           } catch (D) {
             throw console.error("Electron 파일 로드 오류:", D), new Error(`로컬 파일 접근 오류: ${D instanceof Error ? D.message : String(D)}`);
           }
@@ -1735,17 +1735,17 @@ const Je = {
           const W = await ee;
           console.log(`파일 선택됨: ${W.name}, 크기: ${W.size} 바이트`), f || (f = W.name);
           const te = await W.arrayBuffer();
-          console.log(`파일 읽기 완료, 크기: ${te.byteLength} 바이트, 디코딩 시작...`), _ = await h.decodeAudioData(te);
+          console.log(`파일 읽기 완료, 크기: ${te.byteLength} 바이트, 디코딩 시작...`), P = await h.decodeAudioData(te);
         }
       else
-        console.log("URL에서 오디오 파일 로드 중..."), _ = await h.loadAudioFile(u);
-      console.log(`오디오 버퍼 생성 완료 - 길이: ${_.duration.toFixed(2)}초, 채널: ${_.numberOfChannels}`);
+        console.log("URL에서 오디오 파일 로드 중..."), P = await h.loadAudioFile(u);
+      console.log(`오디오 버퍼 생성 완료 - 길이: ${P.duration.toFixed(2)}초, 채널: ${P.numberOfChannels}`);
       const L = Ke();
       console.log(`새 트랙 생성: ${L}`), console.log("파형 데이터 생성 중...");
-      const q = h.generateWaveformData(_, 2e3), Z = {
+      const q = h.generateWaveformData(P, 2e3), Z = {
         id: L,
         name: f || "New Track",
-        audioBuffer: _,
+        audioBuffer: P,
         waveformData: q,
         volume: 1,
         pan: 0,
@@ -1753,23 +1753,23 @@ const Je = {
         solo: !1,
         gain: 1,
         startTime: 0,
-        duration: _.duration,
+        duration: P.duration,
         effects: [],
         markers: [],
         isSelected: !1
       };
-      return console.log("트랙 설정 중..."), h.setupTrack(Z), console.log("상태 업데이트 중..."), t({ type: "ADD_TRACK", payload: Z }), (e.loop.end === 0 || e.loop.end < _.duration) && t({
+      return console.log("트랙 설정 중..."), h.setupTrack(Z), console.log("상태 업데이트 중..."), t({ type: "ADD_TRACK", payload: Z }), (e.loop.end === 0 || e.loop.end < P.duration) && t({
         type: "SET_LOOP",
         payload: {
           enabled: e.loop.enabled,
           start: e.loop.start,
-          end: _.duration
+          end: P.duration
         }
-      }), console.log(`트랙 로드 완료: ${L}, 이름: ${f}, 길이: ${_.duration.toFixed(2)}초`), L;
-    } catch (_) {
-      return console.error("오디오 파일 로드 중 오류 발생:", _), "";
+      }), console.log(`트랙 로드 완료: ${L}, 이름: ${f}, 길이: ${P.duration.toFixed(2)}초`), L;
+    } catch (P) {
+      return console.error("오디오 파일 로드 중 오류 발생:", P), "";
     }
-  }, [i, t, e.loop]), H = P(() => {
+  }, [i, t, e.loop]), H = _(() => {
     const u = i();
     if (!u || e.isPlaying) {
       console.error("AudioService가 초기화되지 않았습니다.");
@@ -1784,7 +1784,7 @@ const Je = {
     }).catch((f) => {
       console.error("AudioContext resume 실패:", f);
     })) : Q();
-  }, [e.isPaused, e.currentTime, e.tracks.length, i, t]), Q = P(() => {
+  }, [e.isPaused, e.currentTime, e.tracks.length, i, t]), Q = _(() => {
     const u = i();
     if (!u) {
       console.error("startPlayback: AudioService가 초기화되지 않았습니다.");
@@ -1805,27 +1805,27 @@ const Je = {
           console.error("시간 업데이트 중 오류:", h);
         }
     }, 30);
-  }, [e.currentTime, e.loop, e.duration, e.tracks.length, e.isPlaying, e.isPaused, i, t]), z = P(() => {
+  }, [e.currentTime, e.loop, e.duration, e.tracks.length, e.isPlaying, e.isPaused, i, t]), z = _(() => {
     const u = i();
     !u || !e.isPlaying || (u.pausePlayback(), a.current && (clearInterval(a.current), a.current = null), t({ type: "PAUSE" }));
-  }, [e.isPlaying, i]), me = P(() => {
+  }, [e.isPlaying, i]), me = _(() => {
     const u = i();
     u && (u.stopAllTracks(), a.current && (clearInterval(a.current), a.current = null), t({ type: "SET_CURRENT_TIME", payload: 0 }), t({ type: "STOP" }));
-  }, [i]), xe = P((u) => {
+  }, [i]), xe = _((u) => {
     t({ type: "SELECT_TRACK", payload: u });
-  }, []), ie = P((u, f, h) => {
+  }, []), ie = _((u, f, h) => {
     t({
       type: "SET_LOOP",
       payload: { enabled: u, start: f, end: h }
     });
-  }, []), ye = P((u) => {
+  }, []), ye = _((u) => {
     t({ type: "SET_CURRENT_TIME", payload: u });
-  }, []), ve = P(async (u, f, h, _) => {
+  }, []), ve = _(async (u, f, h, P) => {
     const L = i();
     if (!L)
       throw new Error("오디오 서비스가 초기화되지 않았습니다.");
     try {
-      return await L.exportAudio(u, f, h, _);
+      return await L.exportAudio(u, f, h, P);
     } catch (q) {
       throw console.error("오디오 내보내기 중 오류:", q), q;
     }
@@ -1862,7 +1862,7 @@ const Je = {
     }
   );
 }, se = () => {
-  const n = At(Xe);
+  const n = Nt(Xe);
   if (n === void 0)
     throw new Error("useAudioEditor must be used within an AudioEditorProvider");
   return n;
@@ -2776,7 +2776,7 @@ const Je = {
       borderRadius: "4px"
     }, children: a })
   ] });
-}, Gt = () => /* @__PURE__ */ s.jsx(Dt, { children: /* @__PURE__ */ s.jsxs("div", { className: "audio-editor-container", style: {
+}, Gt = () => /* @__PURE__ */ s.jsx(Ze, { children: /* @__PURE__ */ s.jsxs("div", { className: "audio-editor-container", style: {
   fontFamily: "Arial, sans-serif",
   maxWidth: "1200px",
   margin: "0 auto",
@@ -2818,16 +2818,19 @@ const Je = {
     color: "#6c757d",
     fontSize: "0.9em"
   }, children: "vCut 오디오 편집 모듈 - 버전 0.1.0" })
-] }) });
+] }) }), qt = {
+  Provider: Ze
+};
 export {
-  Dt as AudioEditorProvider,
   S as AudioEffectType,
   Ut as AudioFileUploader,
-  Vt as AudioService,
+  Ft as AudioService,
   It as AudioTrack,
   Bt as EffectsPanel,
+  Ze as Provider,
   Gt as TestAudioEditor,
   Mt as TrackList,
   Lt as TransportControls,
+  qt as default,
   se as useAudioEditor
 };
